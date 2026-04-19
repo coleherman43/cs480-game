@@ -11,11 +11,12 @@ public class CameraController : MonoBehaviour
     float rotY = 0f;
     float rotX = 0f;
 
-    
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // Hide cursor and keep centered
+        cam = GetComponentInChildren<Camera>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -23,11 +24,9 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rotY += Input.GetAxis("Mouse X") * sensitivity;
-        rotX += Input.GetAxis("Mouse Y") * sensitivity;
-
+        rotY += UnityEngine.InputSystem.Mouse.current.delta.x.ReadValue() * sensitivity * Time.deltaTime;
+        rotX += UnityEngine.InputSystem.Mouse.current.delta.y.ReadValue() * sensitivity * Time.deltaTime;
         rotX = Mathf.Clamp(rotX, minX, maxX);
-
         transform.localEulerAngles = new Vector3(0, rotY, 0);
         cam.transform.localEulerAngles = new Vector3(-rotX, 0, 0);
     }
