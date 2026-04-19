@@ -16,21 +16,31 @@ public class PlayerMovement : MonoBehaviour
     public Transform groundCheck;
     int jumpCharges;
     public LayerMask groundMask;
+    public LayerMask wallMask;
     bool isGrounded;
     bool isCrouching;
     bool isSprinting;
     bool isSliding;
+    bool isWallRunning;
     public float jumpHeight;
     float startHeight;
     float crouchHeight = 0.5f;
     float gravity;
     public float normalGravity;
+    public float wallRunGravity;
     Vector3 crouchingCenter = new Vector3(0, 0.5f, 0);
     Vector3 standingCenter = new Vector3(0, 0, 0);
     float slideTimer;
     public float maxSlideTimer;
     public float slideSpeedIncrease;
     public float slideSpeedDecrease;
+    public float wallRunSpeedIncrease;
+    public float wallRunSpeedDecrease;
+    bool onLeftWall;
+    bool onRightWall;
+    RaycastHit leftWallHit;
+    RaycastHit rightWallHit;
+    Vector3 wallNormal;
     
 
 
@@ -78,23 +88,26 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         HandleInput();
-        if (isGrounded && !isSliding)
-        {
-            GroundedMovement();
-        }
-        else if (!isGrounded)
-        {
-            AirMovement();
-        }
-        else if (isSliding)
+        CheckWallRun();
+        if (isSliding)
         {
             SlideMovement();
             DecreaseSpeed(slideSpeedDecrease);
             slideTimer -= 1f * Time.deltaTime;
-            if (slideTimer < 0)
-            {
-                isSliding = false;
-            }
+            if (slideTimer < 0) isSliding = false;
+        }
+        else if (isWallRunning)
+        {
+            WallRunMovement();
+            DecreaseSpeed(wallRunSpeedDecrease);
+        }
+        else if (isGrounded)
+        {
+            GroundedMovement();
+        }
+        else
+        {
+            AirMovement();
         }
 
         CheckGround();
@@ -142,13 +155,22 @@ public class PlayerMovement : MonoBehaviour
 
     void ApplyGravity()
     {
-        gravity = normalGravity;
+        gravity = isWallRunning ? wallRunGravity : normalGravity;
         Yvelocity.y += gravity * Time.deltaTime;
         controller.Move(Yvelocity * Time.deltaTime);
     }
 
     void Jump()
     {
+        if (isGrounded && !isWallRunning)
+        {
+            jumpCharges -= 1;
+        }
+        else if (isWallRunning)
+        {
+            ExitWallRun();
+            IncreaseSpeed(wallRunSpeedIncrease);
+        }
         Yvelocity.y = Mathf.Sqrt(jumpHeight * -2f * normalGravity);
     }
 
@@ -193,5 +215,55 @@ public class PlayerMovement : MonoBehaviour
     {
         move += forwardDirection;
         move = Vector3.ClampMagnitude(move, speed);
+    }
+
+    void WallRunMovement()
+    {
+        if (input.z > (forwardDirection.z - 10f) && input.z < (forwardDirection.z + 10f))
+        {
+            move.z += forwardDirection.z;
+        }
+        else if (input.z < (forwardDirection.z - 10f) && input.z > (forwardDirection.z + 10f))
+        {
+            move.x = 0f;
+            move.z = 0f;
+            ExitWallRun();
+        }
+        move.x += input.x * airSpeed;
+        move = Vector3.ClampMagnitude(move, speed);
+    }
+
+    void CheckWallRun()
+    {
+        onLeftWall = Physics.Raycast(transform.position, -transform.right, out leftWallHit, 0.7f, wallMask);
+        onRightWall = Physics.Raycast(transform.position, transform.right, out rightWallHit, 0.7f, wallMask);
+
+        if ((onRightWall || onLeftWall) && !isWallRunning)
+        {
+            WallRun();
+        }
+        if ((!onRightWall && !onLeftWall) && isWallRunning)
+        {
+            ExitWallRun();
+        }
+    }
+
+    void WallRun()
+    {
+        isWallRunning = true;
+        jumpCharges = 1;
+        IncreaseSpeed(wallRunSpeedIncrease);
+        Yvelocity = new Vector3(0f, 0f, 0f);
+        wallNormal = onLeftWall ? leftWallHit.normal : rightWallHit.normal;
+        forwardDirection = Vector3.Cross(wallNormal, Vector3.up);
+        if (Vector3.Dot(forwardDirection, transform.forward) < 0)
+        {
+            forwardDirection = -forwardDirection;
+        }
+    }
+
+    void ExitWallRun()
+    {
+        isWallRunning = false;
     }
 }
