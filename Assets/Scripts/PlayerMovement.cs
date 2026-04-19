@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     Vector3 move;
     Vector3 input;
     Vector3 Yvelocity;
+    Vector3 forwardDirection;
     float speed;
     public float runSpeed;
     public float airSpeed;
@@ -18,6 +19,7 @@ public class PlayerMovement : MonoBehaviour
     bool isGrounded;
     bool isCrouching;
     bool isSprinting;
+    bool isSliding;
     public float jumpHeight;
     float startHeight;
     float crouchHeight = 0.5f;
@@ -25,6 +27,10 @@ public class PlayerMovement : MonoBehaviour
     public float normalGravity;
     Vector3 crouchingCenter = new Vector3(0, 0.5f, 0);
     Vector3 standingCenter = new Vector3(0, 0, 0);
+    float slideTimer;
+    public float maxSlideTimer;
+    public float slideSpeedIncrease;
+    public float slideSpeedDecrease;
     
 
 
@@ -72,13 +78,23 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         HandleInput();
-        if (isGrounded)
+        if (isGrounded && !isSliding)
         {
             GroundedMovement();
         }
-        else
+        else if (!isGrounded)
         {
             AirMovement();
+        }
+        else if (isSliding)
+        {
+            SlideMovement();
+            DecreaseSpeed(slideSpeedDecrease);
+            slideTimer -= 1f * Time.deltaTime;
+            if (slideTimer < 0)
+            {
+                isSliding = false;
+            }
         }
 
         CheckGround();
@@ -142,6 +158,16 @@ public class PlayerMovement : MonoBehaviour
         controller.center = crouchingCenter;
         transform.localScale = new Vector3(transform.localScale.x, crouchHeight, transform.localScale.z);
         isCrouching = true;
+        if (speed > runSpeed)
+        {
+            isSliding = true;
+            forwardDirection = transform.forward;
+            if (isGrounded)
+            {
+                IncreaseSpeed(slideSpeedIncrease);
+            }
+            slideTimer = maxSlideTimer;
+        }
     }
 
     void ExitCrouch()
@@ -150,5 +176,22 @@ public class PlayerMovement : MonoBehaviour
         controller.center = standingCenter;
         transform.localScale = new Vector3(transform.localScale.x, startHeight, transform.localScale.z);
         isCrouching = false;
+        isSliding = false;
+    }
+
+    void IncreaseSpeed(float speedIncrease)
+    {
+        speed += speedIncrease;
+    }
+
+    void DecreaseSpeed(float speedDecrease)
+    {
+        speed -= speedDecrease * Time.deltaTime;
+    }
+
+    void SlideMovement()
+    {
+        move += forwardDirection;
+        move = Vector3.ClampMagnitude(move, speed);
     }
 }
