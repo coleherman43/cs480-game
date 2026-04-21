@@ -2,6 +2,14 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
+
+# additional
+.vscode/
+.vscode/*
+cs480-game.slnx
+ProjectSettings/SceneTemplateSettings.json
+
+#Unity editor files
 .utmp/
 /[Ll]ibrary/
 /[Tt]emp/
