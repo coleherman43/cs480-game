@@ -217,26 +217,57 @@ public class PlayerMovement : MonoBehaviour
         move = Vector3.ClampMagnitude(move, speed);
     }
 
+    // void WallRunMovement()
+    // {
+    //     if (input.z > (forwardDirection.z - 10f) && input.z < (forwardDirection.z + 10f))
+    //     {
+    //         move.z += forwardDirection.z;
+    //     }
+    //     else if (input.z < (forwardDirection.z - 10f) && input.z > (forwardDirection.z + 10f))
+    //     {
+    //         move.x = 0f;
+    //         move.z = 0f;
+    //         ExitWallRun();
+    //     }
+    //     move.x += input.x * airSpeed;
+    //     move = Vector3.ClampMagnitude(move, speed);
+    // }
+
     void WallRunMovement()
     {
-        if (input.z > (forwardDirection.z - 10f) && input.z < (forwardDirection.z + 10f))
+        float wallInput = Vector3.Dot(input, wallNormal);
+        if (wallInput < -0.3f)
         {
-            move.z += forwardDirection.z;
-        }
-        else if (input.z < (forwardDirection.z - 10f) && input.z > (forwardDirection.z + 10f))
-        {
-            move.x = 0f;
-            move.z = 0f;
+            move = Vector3.zero;
             ExitWallRun();
+            return;
         }
-        move.x += input.x * airSpeed;
-        move = Vector3.ClampMagnitude(move, speed);
+        move = forwardDirection * speed;
     }
+
+    // void CheckWallRun()
+    // {
+    //     onLeftWall = Physics.Raycast(transform.position, -transform.right, out leftWallHit, 1.0f, wallMask);
+    //     onRightWall = Physics.Raycast(transform.position, transform.right, out rightWallHit, 1.0f, wallMask);
+
+    //     if ((onRightWall || onLeftWall) && !isWallRunning)
+    //     {
+    //         WallRun();
+    //     }
+    //     if ((!onRightWall && !onLeftWall) && isWallRunning)
+    //     {
+    //         ExitWallRun();
+    //     }
+    // }
 
     void CheckWallRun()
     {
-        onLeftWall = Physics.Raycast(transform.position, -transform.right, out leftWallHit, 0.7f, wallMask);
-        onRightWall = Physics.Raycast(transform.position, transform.right, out rightWallHit, 0.7f, wallMask);
+        onRightWall = Physics.Raycast(transform.position, -transform.right, out rightWallHit, 1.0f, wallMask);
+        onLeftWall = Physics.Raycast(transform.position, transform.right, out leftWallHit, 1.0f, wallMask);
+
+        Debug.Log($"Left: {onLeftWall}, Right: {onRightWall}, isWallRunning: {isWallRunning}");
+        Debug.DrawRay(transform.position, -transform.right * 1.0f, Color.red);
+        Debug.DrawRay(transform.position, transform.right * 1.0f, Color.green);
 
         if ((onRightWall || onLeftWall) && !isWallRunning)
         {
@@ -248,14 +279,29 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // void WallRun()
+    // {
+    //     isWallRunning = true;
+    //     jumpCharges = 1;
+    //     IncreaseSpeed(wallRunSpeedIncrease);
+    //     Yvelocity = new Vector3(0f, 0f, 0f);
+    //     wallNormal = onLeftWall ? leftWallHit.normal : rightWallHit.normal;
+    //     forwardDirection = Vector3.Cross(wallNormal, Vector3.up);
+    //     if (Vector3.Dot(forwardDirection, transform.forward) < 0)
+    //     {
+    //         forwardDirection = -forwardDirection;
+    //     }
+    // }
     void WallRun()
     {
+        if (isWallRunning) return;
         isWallRunning = true;
         jumpCharges = 1;
         IncreaseSpeed(wallRunSpeedIncrease);
-        Yvelocity = new Vector3(0f, 0f, 0f);
+        Yvelocity = Vector3.zero;
         wallNormal = onLeftWall ? leftWallHit.normal : rightWallHit.normal;
         forwardDirection = Vector3.Cross(wallNormal, Vector3.up);
+        if (onRightWall) forwardDirection = -forwardDirection;
         if (Vector3.Dot(forwardDirection, transform.forward) < 0)
         {
             forwardDirection = -forwardDirection;
@@ -265,5 +311,7 @@ public class PlayerMovement : MonoBehaviour
     void ExitWallRun()
     {
         isWallRunning = false;
+        speed = runSpeed;
+        move = Vector3.zero;
     }
 }
