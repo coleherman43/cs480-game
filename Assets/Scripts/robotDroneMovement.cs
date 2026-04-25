@@ -28,13 +28,12 @@ public class robotDroneMovement : MonoBehaviour
     void ApplyHoverPosition()
     {
         float bobOffset = Mathf.Sin(Time.time * bobSpeed) * bobAmplitude;
-        float forwardOffset = Mathf.Sin(Time.time * moveSpeed) * moveDistance;
-        Vector3 moveOffset = transform.forward * forwardOffset;
+        float xOffset = Mathf.Sin(Time.time * moveSpeed) * moveDistance;
 
         transform.position = new Vector3(
-            basePosition.x + moveOffset.x,
+            basePosition.x + xOffset,
             hoverHeight + bobOffset,
-            basePosition.z + moveOffset.z
+            basePosition.z
         );
     }
 }
