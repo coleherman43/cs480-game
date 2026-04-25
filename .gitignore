@@ -7,11 +7,7 @@
 .vscode/
 .vscode/*
 cs480-game.slnx
-# editor and project settings, I think it is best to push minimally for these, as
-# a lot of the settings are machine/build type specific. We can just ensure manual configuration
-# is set up properly for given machine when we go to build.
-ProjectSettings/*
-Assets/Settings/*
+ProjectSettings/SceneTemplateSettings.json
 
 #Unity editor files
 .utmp/
