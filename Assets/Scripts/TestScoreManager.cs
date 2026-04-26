@@ -31,6 +31,6 @@ public class TestScoreManager : MonoBehaviour
 
     private void SetText(int newText)
     {
-        scoreText.text = (newText.ToString());
+        scoreText.text = ("$ " + newText.ToString());
     }
 }
