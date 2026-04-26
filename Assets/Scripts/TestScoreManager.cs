@@ -3,10 +3,14 @@ Test file to subscribe a scoring system to the OnPickupCollected GameEvent broad
 */
 
 using UnityEngine;
+using TMPro;
+using System.Collections;
 
 public class TestScoreManager : MonoBehaviour
 {
     private int score = 0;
+
+    public TextMeshProUGUI scoreText;
 
     private void OnEnable()
     {
@@ -21,6 +25,12 @@ public class TestScoreManager : MonoBehaviour
     private void AddScore(int amount)
     {
         score += amount;
+        SetText(score);
         Debug.Log("Score: " + score);
+    }
+
+    private void SetText(int newText)
+    {
+        scoreText.text = (newText.ToString());
     }
 }
