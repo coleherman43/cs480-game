@@ -137,7 +137,8 @@ Material:
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     - _blend: 1
-    - _nomalStrength: 0.2
+    - _metallic: 1
+    - _nomalStrength: 0.5
     - _tiling: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
