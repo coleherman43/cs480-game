@@ -18,9 +18,9 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundMask;
     public LayerMask wallMask;
     bool isGrounded;
-    bool isCrouching;
-    bool isSprinting;
-    bool isSliding;
+    public bool isCrouching;
+    public bool isSprinting;
+    public bool isSliding;
     bool isWallRunning;
     public float jumpHeight;
     float startHeight;
