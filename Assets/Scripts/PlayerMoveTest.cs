@@ -153,52 +153,27 @@ public class PlayerMoveTest : MonoBehaviour
 			Jump();
 		}
 		float num3 = walkSpeed;
-		if (sprinting)
-		{
-			num3 = runSpeed;
-		}
+		if (sprinting) num3 = runSpeed;
+
 		if (crouching && grounded && readyToJump)
 		{
 			rb.AddForce(Vector3.down * Time.deltaTime * 3000f);
 			return;
 		}
-		if (x > 0f && num > num3)
-		{
-			x = 0f;
-		}
-		if (x < 0f && num < 0f - num3)
-		{
-			x = 0f;
-		}
-		if (y > 0f && num2 > num3)
-		{
-			y = 0f;
-		}
-		if (y < 0f && num2 < 0f - num3)
-		{
-			y = 0f;
-		}
+		if (x > 0f && num > num3) x = 0f;
+		if (x < 0f && num < 0f - num3) x = 0f;
+		if (y > 0f && num2 > num3) y = 0f;
+		if (y < 0f && num2 < 0f - num3) y = 0f;
+
 		float num4 = 1f;
 		float num5 = 1f;
-		if (!grounded)
-		{
-			num4 = 0.5f;
-			num5 = 0.5f;
-		}
-		if (grounded && crouching)
-		{
-			num5 = 0f;
-		}
-		if (wallRunning)
-		{
-			num5 = 0.3f;
-			num4 = 0.3f;
-		}
-		if (surfing)
-		{
-			num4 = 0.7f;
-			num5 = 0.3f;
-		}
+		if (!grounded) { num4 = 0.5f; num5 = 0.5f; }
+		if (grounded && crouching) num5 = 0f;
+
+		if (wallRunning) { num5 = 0.8f; num4 = 1f; }
+
+		if (surfing) { num4 = 0.7f; num5 = 0.3f; }
+
 		rb.AddForce(orientation.transform.forward * y * moveSpeed * Time.deltaTime * num4 * num5);
 		rb.AddForce(orientation.transform.right * x * moveSpeed * Time.deltaTime * num4);
 	}
