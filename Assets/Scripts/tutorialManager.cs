@@ -9,13 +9,16 @@ public class TextController : MonoBehaviour
 
 
  // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void OnEnable()
     {
-
         StartCoroutine(intro());
-
+        GameEvents.OnZoneEnter += SetText;
     }
-
+    void OnDisable()
+    {
+        GameEvents.OnZoneEnter -= SetText;
+    }
+    
     public void SetText(string newText)
     {
         tutorialText.text = newText;
