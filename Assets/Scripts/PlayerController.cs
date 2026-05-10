@@ -1,8 +1,32 @@
-// PlayerMoveTest
 using System;
 using UnityEngine;
 
-public class PlayerMoveTest : MonoBehaviour
+
+public interface ICommand
+{
+	void Execute(PlayerController player);
+}
+
+public class MoveCommand : ICommand
+{
+	private Vector2 direction;
+	public MoveCommand(Vector2 direction) => this.direction = direction;
+	public void Execute(PlayerController player) => player.Move(direction);
+}
+
+public class JumpCommand : ICommand
+{
+	public void Execute(PlayerController player) => player.Jump();
+}
+
+public class CrouchCommand : ICommand
+{
+	public void Execute(PlayerController player) => player.StartCrouch();
+}
+
+
+
+public class PlayerController : MonoBehaviour
 {   
     [Header("Assignables")]
     //Assignables
@@ -26,7 +50,7 @@ public class PlayerMoveTest : MonoBehaviour
 	public bool onWall;
 
     //Private Floats
-    private float wallRunGravity = 1f;
+    private float wallRunGravity = 0.5f;
 	private float maxSlopeAngle = 35f;
 	private float wallRunRotation;
     private float slideSlowdown = 0.2f;
@@ -67,7 +91,7 @@ public class PlayerMoveTest : MonoBehaviour
 	private int nw;
     
     //Instance
-	public static PlayerMoveTest Instance { get; private set; }
+	public static PlayerController Instance { get; private set; }
 
 	private void Awake()
 	{
@@ -99,37 +123,53 @@ public class PlayerMoveTest : MonoBehaviour
 	private void Update()
 	{
         //Input
-		MyInput();
+		ReadInput();
         //Looking around
 		Look();
 	}
 
     //Player input
-	private void MyInput()
+	private void ReadInput()
 	{
-		x = Input.GetAxisRaw("Horizontal");
-		y = Input.GetAxisRaw("Vertical");
+		Vector2 moveDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+		if (moveDir != Vector2.zero)
+			new MoveCommand(moveDir).Execute(this);
+		
 		jumping = Input.GetButton("Jump");
+		if (Input.GetKeyDown(KeyCode.Space))
+			new JumpCommand().Execute(this);
+		
 		crouching = Input.GetKey(KeyCode.LeftShift);
 		if (Input.GetKeyDown(KeyCode.LeftShift))
-		{
-			StartCrouch();
-		}
+			new CrouchCommand().Execute(this);
+		
 		if (Input.GetKeyUp(KeyCode.LeftShift))
-		{
 			StopCrouch();
-		}
+	}
+
+	public void Move(Vector2 direction)
+	{
+		x = direction.x;
+		y = direction.y;
 	}
 
     //Scale player down
-	private void StartCrouch()
+	public void StartCrouch()
 	{
+		if (wallRunning) return;
+        
 		float num = 400f;
-		base.transform.localScale = new Vector3(1f, 0.5f, 1f);
-		base.transform.position = new Vector3(base.transform.position.x, base.transform.position.y - 0.5f, base.transform.position.z);
-		if (rb.linearVelocity.magnitude > 0.1f && grounded)
+        
+		// Only apply position and scale changes when grounded to avoid clipping
+		if (grounded)
 		{
-			rb.AddForce(orientation.transform.forward * num);
+			base.transform.localScale = new Vector3(1f, 0.5f, 1f);
+			base.transform.position = new Vector3(base.transform.position.x, base.transform.position.y - 0.5f, base.transform.position.z);
+			
+			if (rb.linearVelocity.magnitude > 0.1f)
+			{
+				rb.AddForce(orientation.transform.forward * num);
+			}
 		}
 	}
 
@@ -170,7 +210,7 @@ public class PlayerMoveTest : MonoBehaviour
 		if (!grounded) { num4 = 0.5f; num5 = 0.5f; }
 		if (grounded && crouching) num5 = 0f;
 
-		if (wallRunning) { num5 = 0.8f; num4 = 1f; }
+		if (wallRunning) { num5 = 1.2f; num4 = 1.2f; }
 
 		if (surfing) { num4 = 0.7f; num5 = 0.3f; }
 
@@ -185,7 +225,7 @@ public class PlayerMoveTest : MonoBehaviour
 	}
 
     //Player go fly
-	private void Jump()
+	public void Jump()
 	{
         if ((grounded || wallRunning || surfing) && readyToJump)
 		{
