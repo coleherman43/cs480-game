@@ -24,7 +24,6 @@ public class PickupItem : MonoBehaviour
     }
     public void toggleShader()
     {
-        Debug.Log("shader toggle attmept");
         rend.GetPropertyBlock(mpb);
 
         float current = mpb.GetFloat(ThicknessID);
