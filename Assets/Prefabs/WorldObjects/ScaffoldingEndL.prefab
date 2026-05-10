@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ScaffoldingEndL
       objectReference: {fileID: 0}
+    - target: {fileID: 2757135472814484182, guid: a9ebb888dcabcd446b35887b870e08ce, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3244985052237148268, guid: a9ebb888dcabcd446b35887b870e08ce, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7.23
