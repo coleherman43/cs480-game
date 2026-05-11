@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 public interface ICommand
@@ -89,6 +90,7 @@ public class PlayerController : MonoBehaviour
 
     //Private int
 	private int nw;
+	private PlayerInput playerInput;
     
     //Instance
 	public static PlayerController Instance { get; private set; }
@@ -102,6 +104,8 @@ public class PlayerController : MonoBehaviour
 	private void Start()
 	{
 		playerCollider = GetComponent<Collider>();
+		playerInput = GetComponent<PlayerInput>();
+        
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
 		readyToJump = true;
@@ -131,19 +135,19 @@ public class PlayerController : MonoBehaviour
     //Player input
 	private void ReadInput()
 	{
-		Vector2 moveDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+		Vector2 moveDir = playerInput.actions["Move"].ReadValue<Vector2>();
 		if (moveDir != Vector2.zero)
 			new MoveCommand(moveDir).Execute(this);
 		
-		jumping = Input.GetButton("Jump");
-		if (Input.GetKeyDown(KeyCode.Space))
+		jumping = playerInput.actions["Jump"].IsPressed();
+		if (playerInput.actions["Jump"].WasPressedThisFrame())
 			new JumpCommand().Execute(this);
 		
-		crouching = Input.GetKey(KeyCode.LeftShift);
-		if (Input.GetKeyDown(KeyCode.LeftShift))
+		crouching = playerInput.actions["Crouch"].IsPressed();
+		if (playerInput.actions["Crouch"].WasPressedThisFrame())
 			new CrouchCommand().Execute(this);
 		
-		if (Input.GetKeyUp(KeyCode.LeftShift))
+		if (playerInput.actions["Crouch"].WasReleasedThisFrame())
 			StopCrouch();
 	}
 
@@ -257,8 +261,10 @@ public class PlayerController : MonoBehaviour
     //Looking around by using your mouse
 	private void Look()
 	{
-		float num = Input.GetAxis("Mouse X") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
-		float num2 = Input.GetAxis("Mouse Y") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
+		Vector2 lookInput = playerInput.actions["Look"].ReadValue<Vector2>();
+		float num = lookInput.x * sensitivity * Time.fixedDeltaTime * sensMultiplier;
+		float num2 = lookInput.y * sensitivity * Time.fixedDeltaTime * sensMultiplier;
+		
 		desiredX = playerCam.transform.localRotation.eulerAngles.y + num;
 		xRotation -= num2;
 		xRotation = Mathf.Clamp(xRotation, -90f, 90f);
