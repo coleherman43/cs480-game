@@ -180,7 +180,7 @@ public class PlayerController : MonoBehaviour
     //Scale player to original size
 	private void StopCrouch()
 	{
-		base.transform.localScale = new Vector3(1f, 1.5f, 1f);
+		base.transform.localScale = new Vector3(1f, 1.0f, 1f);
 		base.transform.position = new Vector3(base.transform.position.x, base.transform.position.y + 0.5f, base.transform.position.z);
 	}
 
