@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class DynamicFOV : MonoBehaviour
 {
+    /*
     public Camera playerCamera;
 
     [Header("FOV Settings")]
@@ -43,5 +44,5 @@ public class DynamicFOV : MonoBehaviour
             Time.deltaTime * smoothSpeed
         );
     }
-
+    */
 }

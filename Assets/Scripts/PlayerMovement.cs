@@ -11,74 +11,56 @@ public class PlayerMovement : MonoBehaviour
     [Header("LayerMasks")]
     public LayerMask groundMask;
     public LayerMask wallMask;
-    bool isGrounded;
-    public bool isCrouching;
-    public bool isSprinting;
-    public bool isSliding;
-    bool isWallRunning;
-    public float jumpHeight;
-    float startHeight;
-    float crouchHeight = 0.5f;
-    float gravity;
-    public float normalGravity;
-    public float wallRunGravity;
-    Vector3 crouchingCenter = new Vector3(0, 0.5f, 0);
-    Vector3 standingCenter = new Vector3(0, 0, 0);
-    float slideTimer;
-    public float maxSlideTimer;
-    public float slideSpeedIncrease;
-    public float slideSpeedDecrease;
-    public float wallRunSpeedIncrease;
-    public float wallRunSpeedDecrease;
-    bool onLeftWall;
-    bool onRightWall;
-    RaycastHit leftWallHit;
-    RaycastHit rightWallHit;
-    Vector3 wallNormal;
-    
 
+    [Header("Movement")]
+    public float moveSpeed = 4500f;
+    public float walkSpeed = 20f;
+    public float sprintSpeed = 30f;
+    public float crouchSpeed = 10f;
+    public float airMultiplier = 0.5f;
 
-    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [Header("Jumping")]
+    public float jumpForce = 550f;
+    private float jumpCooldown = 0.25f;
+    private bool readyToJump = true;
+
+    [Header("Sliding")]
+    public float slideForce = 400f;
+    public float slideSlowdown = 0.2f;
+    private bool sliding;
+    private Vector3 slideDirection;
+
+    [Header("WallRunning")]
+    public float wallRunGravity = 1f;
+    public float wallRunJumpForce = 600f;
+    private bool wallRunning;
+    private bool readyToWallrun = true;
+    private Vector3 wallNormalVector;
+
+    [Header("Ground Check")]
+    public Transform groundCheck;
+    public float groundDistance = 0.4f;
+    private bool grounded;
+    private Vector3 normalVector;
+
+    // Private state
+    private float x, y;
+    private bool jumping, crouching, sprinting;
+    private bool cancellingGrounded;
+    private float desiredX;
+    private float xRotation;
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
     void Start()
     {
-        controller = GetComponent<CharacterController>();
-        startHeight = transform.localScale.y;
+        Cursor.lockState = CursorLockMode.Locked;
+        wallNormalVector = Vector3.up;
     }
 
-    void HandleInput()
-    {
-        float x = Keyboard.current.dKey.isPressed ? 1f :
-                Keyboard.current.aKey.isPressed ? -1f : 0f;
-        float z = Keyboard.current.wKey.isPressed ? 1f :
-                Keyboard.current.sKey.isPressed ? -1f : 0f;
-        input = new Vector3(x, 0f, z);
-        input = transform.TransformDirection(input);
-        input = Vector3.ClampMagnitude(input, 1f);
-
-        if (Keyboard.current.spaceKey.wasPressedThisFrame && jumpCharges > 0)
-        {
-            Jump();
-        }
-        if (Keyboard.current.cKey.wasPressedThisFrame)
-        {
-            Crouch();
-        }
-        if (Keyboard.current.cKey.wasReleasedThisFrame)
-        {
-            ExitCrouch();
-        }
-        if (Keyboard.current.leftShiftKey.wasPressedThisFrame && isGrounded)
-        {
-            isSprinting = true;
-        }
-        if (Keyboard.current.leftShiftKey.wasReleasedThisFrame)
-        {
-            isSprinting = false;
-        }
-    }
-
-    // Update is called once per frame
     void Update()
     {
         Look();
