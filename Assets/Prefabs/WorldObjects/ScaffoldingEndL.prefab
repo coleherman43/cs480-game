@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2649003687054509976, guid: a9ebb888dcabcd446b35887b870e08ce, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2757135472814484182, guid: a9ebb888dcabcd446b35887b870e08ce, type: 3}
       propertyPath: m_Name
       value: ScaffoldingEndL

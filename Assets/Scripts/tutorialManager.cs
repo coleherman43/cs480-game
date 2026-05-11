@@ -27,6 +27,6 @@ public class TextController : MonoBehaviour
     IEnumerator intro()
     {
         yield return new WaitForSeconds(4);
-        SetText("Use W A S D and Shift to move around and sprint!");
+        SetText("Use W A S D and the mouse to move around and look!");
     }
 }

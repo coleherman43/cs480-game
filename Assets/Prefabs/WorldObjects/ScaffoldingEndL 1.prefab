@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4103948438949951226}
   - component: {fileID: 5366728753018136383}
   - component: {fileID: 4120476508271166424}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: wall-colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,6 +160,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 46a9ec94b8b42b34ea24ac0ce9eaec1d, type: 3}
       propertyPath: m_Name
       value: ScaffoldingEndL 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 46a9ec94b8b42b34ea24ac0ce9eaec1d, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

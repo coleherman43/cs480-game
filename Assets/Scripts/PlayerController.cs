@@ -54,7 +54,7 @@ public class PlayerController : MonoBehaviour
     private float wallRunGravity = 0.5f;
 	private float maxSlopeAngle = 35f;
 	private float wallRunRotation;
-    private float slideSlowdown = 0.2f;
+    [SerializeField]private float slideSlowdown = 0.2f;
 	private float actualWallRotation;
 	private float wallRotationVel;
 	private float desiredX;
