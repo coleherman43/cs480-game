@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-2223887263652346820
+--- !u!114 &-4971964084840122175
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,13 +20,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: rustyMetal
-  m_Shader: {fileID: -6465566751694194690, guid: 3846340785c59994aacddb01b16b9413, type: 3}
+  m_Name: blue
+  m_Shader: {fileID: -6465566751694194690, guid: fa68a571fe373ec4aaa0cfa763a248d9, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
-  m_LightmapFlags: 4
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -38,11 +38,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 019570dfd7c1f574c8e5abef5da5bacd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 506cc758492753f4ab60ba503eac6ee6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -62,7 +62,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 019570dfd7c1f574c8e5abef5da5bacd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -74,7 +74,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 0db02b01b5a12824ea2329f243ff9b6f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -82,11 +82,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _mainTexture:
-        m_Texture: {fileID: 2800000, guid: 562d2d3cc7c6f664aafb1dbc16712967, type: 3}
+        m_Texture: {fileID: 2800000, guid: 019570dfd7c1f574c8e5abef5da5bacd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _normal:
-        m_Texture: {fileID: 2800000, guid: 3eaaf0f6269afc24e9a78ca686f48645, type: 3}
+        m_Texture: {fileID: 2800000, guid: 506cc758492753f4ab60ba503eac6ee6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -123,11 +123,11 @@ Material:
     - _GlossyReflections: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
-    - _Parallax: 0.005
+    - _Parallax: 0.027
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoothness: 0.5
+    - _Smoothness: 0.36
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -136,17 +136,17 @@ Material:
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
-    - _blend: 0.66
+    - _blend: 1
     - _contrast: 1
-    - _metallicness: 1
-    - _nomalStrength: 0.2
-    - _smoothness: 0.3
-    - _tiling: 0.32
+    - _metallicness: 0
+    - _nomalStrength: 0.77
+    - _smoothness: 0.33
+    - _tiling: 0.31
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 0.91823894, g: 0.17036504, b: 0.17036504, a: 1}
+    - _Color: {r: 0.918239, g: 0.170365, b: 0.170365, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _tint: {r: 1, g: 1, b: 1, a: 0.99215686}
+    - _tint: {r: 0, g: 0.37576532, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
