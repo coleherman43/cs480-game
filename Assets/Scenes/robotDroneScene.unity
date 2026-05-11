@@ -439,7 +439,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3711734703353242025, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.7120543
+      value: 1.21
       objectReference: {fileID: 0}
     - target: {fileID: 3711734703353242025, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
       propertyPath: m_LocalPosition.z
@@ -473,54 +473,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4743092796066321524, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
-      propertyPath: m_Resource
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4743092796066321524, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
-      propertyPath: MinDistance
-      value: 14.94
-      objectReference: {fileID: 0}
-    - target: {fileID: 4743092796066321524, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4743092796066321524, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
-      propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8611562533532918471, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1200541750}
-    - target: {fileID: 8611562533532918471, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
-      propertyPath: moveSpeed
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8611562533532918471, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
-      propertyPath: tiltAngle
-      value: -6
-      objectReference: {fileID: 0}
-    - target: {fileID: 8611562533532918471, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
-      propertyPath: moveDistance
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8611562533532918471, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
-      propertyPath: detectionRange
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8611562533532918471, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
-      propertyPath: robotLosesClip
-      value: 
-      objectReference: {fileID: 8300000, guid: f67dcde497c474e44889312d9e95f40b, type: 3}
-    - target: {fileID: 8611562533532918471, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
-      propertyPath: robotMovesClip
-      value: 
-      objectReference: {fileID: 8300000, guid: a0ce26384c78ceb44897228dd5d4e51e, type: 3}
-    - target: {fileID: 8611562533532918471, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
-      propertyPath: robotNoticesClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 035321206f559fe4dbc56cc95dbc5d16, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
