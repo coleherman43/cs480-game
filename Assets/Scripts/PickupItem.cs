@@ -8,17 +8,41 @@ using UnityEngine;
 
 public class PickupItem : MonoBehaviour
 {
+    private Renderer rend;
+    private MaterialPropertyBlock mpb;
+
+    private static readonly int ThicknessID =
+        Shader.PropertyToID("_thickness");
+
     [SerializeField] private int scoreValue = 10;
+    private float def = 1.06f;
 
-    private void OnTriggerEnter(Collider other)
+    private void Awake()
     {
-        if (other.CompareTag("Player"))
-        {
-            // Fire the event
-            GameEvents.OnPickupCollected?.Invoke(scoreValue);
+        rend = GetComponent<Renderer>();
+        mpb = new MaterialPropertyBlock();
+    }
+    public void toggleShader()
+    {
+        rend.GetPropertyBlock(mpb);
 
-            // Destroy the object
-            Destroy(gameObject);
+        float current = mpb.GetFloat(ThicknessID);
+        if(current == def)
+        {
+            mpb.SetFloat(ThicknessID, 0.8f);
+        }else
+        {
+            mpb.SetFloat(ThicknessID, def);
         }
+
+        rend.SetPropertyBlock(mpb);
+    }
+    public void OnPickup()
+    {
+        // Fire the event
+        GameEvents.OnPickupCollected?.Invoke(scoreValue);
+
+        // Destroy the object
+        Destroy(gameObject);
     }
 }
