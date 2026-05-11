@@ -588,7 +588,7 @@ public class robotDroneMovement : MonoBehaviour
             return flatVelocity.magnitude;
         }
 
-        PlayerMovement movement = player.GetComponent<PlayerMovement>();
+        PlayerMovement movement = player.GetComponent<PlayerController>();
         if (movement != null)
         {
             if (movement.isCrouching)
