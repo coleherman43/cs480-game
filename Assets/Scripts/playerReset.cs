@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playerReset : MonoBehaviour
 {
@@ -7,8 +8,7 @@ public class playerReset : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            //Debug.Log(other.gameObject.name);
-            // This dream is dead until player movement is finalized
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
 }

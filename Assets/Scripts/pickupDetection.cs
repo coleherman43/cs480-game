@@ -37,6 +37,6 @@ public class pickupDetection : MonoBehaviour
             PickupItem scr = i.GetComponent<PickupItem>();
             scr.OnPickup();
         }
-        Debug.Log(items);
+        items.Clear();
     }
 }

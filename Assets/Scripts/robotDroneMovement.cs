@@ -581,28 +581,9 @@ public class robotDroneMovement : MonoBehaviour
             return chaseSpeed;
         }
 
-        CharacterController playerController = player.GetComponent<CharacterController>();
-        if (playerController != null)
-        {
-            Vector3 flatVelocity = new Vector3(playerController.velocity.x, 0f, playerController.velocity.z);
-            return flatVelocity.magnitude;
-        }
+        PlayerController playerController = player.GetComponent<PlayerController>();
 
-        PlayerMovement movement = player.GetComponent<PlayerController>();
-        if (movement != null)
-        {
-            if (movement.isCrouching)
-            {
-                return movement.crouchSpeed;
-            }
-
-            if (movement.isSprinting)
-            {
-                return movement.sprintSpeed;
-            }
-
-            return movement.runSpeed;
-        }
+        chaseSpeed = playerController.runSpeed;
 
         return chaseSpeed;
     }
