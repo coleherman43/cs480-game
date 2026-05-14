@@ -14,15 +14,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3711734703353242025, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.1
+      value: -6.87
       objectReference: {fileID: 0}
     - target: {fileID: 3711734703353242025, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.21
+      value: -0.3
       objectReference: {fileID: 0}
     - target: {fileID: 3711734703353242025, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.34
+      value: 213.09
       objectReference: {fileID: 0}
     - target: {fileID: 3711734703353242025, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
       propertyPath: m_LocalRotation.w
@@ -51,6 +51,14 @@ PrefabInstance:
     - target: {fileID: 3711734703353242025, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230302192251502642, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
+      propertyPath: hoverHeight
+      value: 7.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230302192251502642, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
+      propertyPath: hoverHeightVariance
+      value: 7.75
       objectReference: {fileID: 0}
     - target: {fileID: 5230302192251502642, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
       propertyPath: obstacleMask.m_Bits
