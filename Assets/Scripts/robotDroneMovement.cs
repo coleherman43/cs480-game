@@ -31,6 +31,7 @@ public class robotDroneMovement : MonoBehaviour
     public Transform player;
     public float detectionRange = 50f;
     public float fovAngle = 60f;
+    public float wallDetectionRange = 8f;
     public LayerMask obstacleMask;
 
     [Header("Chase Lose Timer")]
@@ -454,6 +455,18 @@ public class robotDroneMovement : MonoBehaviour
             transform.position = new Vector3(transform.position.x, ClampHeight(currentTargetHoverHeight), transform.position.z);
             transform.rotation = Quaternion.Euler(0f, facingAngleY, 0f);
 
+            Vector3 settleDir = Quaternion.Euler(0f, facingAngleY, 0f) * Vector3.forward;
+            if (IsWallAheadInDirection(settleDir, wallDetectionRange))
+            {
+                float redirectTurn = Random.Range(60f, 300f);
+                if (Random.value > 0.5f) redirectTurn = -redirectTurn;
+                targetFacingAngleY = facingAngleY + redirectTurn;
+                stateTimer = 0f;
+                bobPhaseOffset = Time.time;
+                currentState = DroneState.Bobbing;
+                return;
+            }
+
             float legDistance = Mathf.Max(0.1f, Random.Range(moveDistanceCenter - moveDistanceVariation, moveDistanceCenter + moveDistanceVariation));
             Vector3 moveDir = Quaternion.Euler(0f, facingAngleY, 0f) * Vector3.forward;
             moveTarget = new Vector3(
@@ -470,6 +483,16 @@ public class robotDroneMovement : MonoBehaviour
 
     void UpdateMoving()
     {
+        if (IsWallAheadInDirection(transform.forward, wallDetectionRange))
+        {
+            currentMoveSpeed = 0f;
+            currentTargetHoverHeight = PickRandomHoverHeight();
+            stateTimer = 0f;
+            bobPhaseOffset = Time.time;
+            currentState = DroneState.Bobbing;
+            return;
+        }
+
         // Face and pitch in the real travel direction for fast-forward movement feel.
         Vector3 flatToTarget = new Vector3(
             moveTarget.x - transform.position.x,
@@ -517,12 +540,18 @@ public class robotDroneMovement : MonoBehaviour
             currentPitch = 0f;
             transform.rotation = Quaternion.Euler(0f, facingAngleY, 0f);
 
-            float turn = Random.Range(60f, 300f);
-            if (Random.value > 0.5f)
+            float candidateAngle = facingAngleY;
+            int maxAttempts = 8;
+            for (int attempt = 0; attempt < maxAttempts; attempt++)
             {
-                turn = -turn;
+                float turn = Random.Range(60f, 300f);
+                if (Random.value > 0.5f) turn = -turn;
+                candidateAngle = facingAngleY + turn;
+                Vector3 candidateDir = Quaternion.Euler(0f, candidateAngle, 0f) * Vector3.forward;
+                if (!IsWallAheadInDirection(candidateDir, wallDetectionRange))
+                    break;
             }
-            targetFacingAngleY = facingAngleY + turn;
+            targetFacingAngleY = candidateAngle;
 
             stateTimer = 0f;
             bobPhaseOffset = Time.time;
@@ -535,6 +564,15 @@ public class robotDroneMovement : MonoBehaviour
         if (player == null)
         {
             ResumePatrolFromChase();
+            return;
+        }
+
+        if (IsWallAheadInDirection(transform.forward, wallDetectionRange))
+        {
+            currentMoveSpeed = 0f;
+            stateTimer = 0f;
+            bobPhaseOffset = Time.time;
+            currentState = DroneState.Bobbing;
             return;
         }
 
@@ -595,6 +633,12 @@ public class robotDroneMovement : MonoBehaviour
         stateTimer = 0f;
         bobPhaseOffset = Time.time;
         currentState = DroneState.Bobbing;
+    }
+
+    bool IsWallAheadInDirection(Vector3 direction, float distance)
+    {
+        if (direction.sqrMagnitude < 0.0001f) return false;
+        return Physics.Raycast(transform.position, direction.normalized, distance, obstacleMask);
     }
 
     void CheckPlayerDetection()
