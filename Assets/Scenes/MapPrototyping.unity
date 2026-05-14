@@ -129,7 +129,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1344304868126060416, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 16.14
+      value: -3.38
       objectReference: {fileID: 0}
     - target: {fileID: 1344304868126060416, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
       propertyPath: m_LocalPosition.y
@@ -137,7 +137,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1344304868126060416, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 216.48
+      value: 261.69
       objectReference: {fileID: 0}
     - target: {fileID: 1344304868126060416, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
       propertyPath: m_LocalRotation.w
@@ -410,7 +410,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1344304868126060416, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.5000003
+      value: -0.3
       objectReference: {fileID: 0}
     - target: {fileID: 1344304868126060416, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
       propertyPath: m_LocalPosition.z
@@ -452,6 +452,14 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1656364329}
+    - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
+      propertyPath: hoverHeight
+      value: 7.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
+      propertyPath: hoverHeightVariance
+      value: 7.75
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
