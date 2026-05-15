@@ -1,3 +1,4 @@
+/* Basic Script for continuously spawning coin pickups in tutorial map. */
 using UnityEngine;
 
 public class CoinSpawner : MonoBehaviour
@@ -19,10 +20,12 @@ public class CoinSpawner : MonoBehaviour
 
     void Update()
     {
+        //Basic timer check, checks if time elapsed is greater than a set interval.
         timer -= Time.deltaTime;
 
         if (timer <= 0f)
         {
+            //Spawn coins and reset
             SpawnCoin();
             ResetTimer();
         }
@@ -35,6 +38,7 @@ public class CoinSpawner : MonoBehaviour
 
     void SpawnCoin()
     {
+        //Instantiates new pickup objects, and gives them some random velocity to increase randomness.
         GameObject coin = Instantiate(coinPrefab, transform.position, Quaternion.identity);
 
         Rigidbody rb = coin.GetComponent<Rigidbody>();
