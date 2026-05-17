@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
             // Tutorial map is unlocked by default (1 in Scene List)
-            unlockedScenes.Add(1);
+            // unlockedScenes.Add(1);
         }
         else
         {

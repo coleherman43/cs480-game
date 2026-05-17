@@ -5,6 +5,6 @@ public class LoadInitialScene : MonoBehaviour
 {
     void Start()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(2);
     }
 }
