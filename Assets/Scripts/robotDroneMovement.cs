@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 public class robotDroneMovement : MonoBehaviour
 {
     public float hoverHeight = 2.05f;
-    public float hoverHeightCenter = 1.25f;
-    public float hoverHeightVariance = 0.75f;
+    public float hoverHeightCenter = 7.25f;
+    public float hoverHeightVariance = 7.75f;
     public float bobAmplitude = 0.2f;
     public float bobSpeed = 1.75f;
     public float moveDistanceCenter = 15f;
@@ -16,6 +16,7 @@ public class robotDroneMovement : MonoBehaviour
     public float deceleration = 12f;
     public float chaseSpeed = 10f;
     public float chaseTurnSpeed = 240f;
+    public float chaseVerticalSpeed = 5f;
     public bool matchPlayerSpeedWhileChasing = true;
     public float minChaseSpeed = 3f;
     public float bobDuration = 3f;
@@ -31,6 +32,7 @@ public class robotDroneMovement : MonoBehaviour
     public Transform player;
     public float detectionRange = 50f;
     public float fovAngle = 60f;
+    public float wallDetectionRange = 10f;
     public LayerMask obstacleMask;
 
     [Header("Chase Lose Timer")]
@@ -423,6 +425,7 @@ public class robotDroneMovement : MonoBehaviour
         float bobOffset = Mathf.Sin((Time.time - bobPhaseOffset) * bobSpeed) * bobAmplitude;
         float targetY = currentTargetHoverHeight + bobOffset;
         float clampedY = ClampHeight(targetY);
+        clampedY = ClampHeightToWalls(clampedY);
         transform.position = new Vector3(transform.position.x, clampedY, transform.position.z);
 
         facingAngleY = Mathf.MoveTowardsAngle(facingAngleY, targetFacingAngleY, rotateSpeed * Time.deltaTime);
@@ -454,6 +457,18 @@ public class robotDroneMovement : MonoBehaviour
             transform.position = new Vector3(transform.position.x, ClampHeight(currentTargetHoverHeight), transform.position.z);
             transform.rotation = Quaternion.Euler(0f, facingAngleY, 0f);
 
+            Vector3 settleDir = Quaternion.Euler(0f, facingAngleY, 0f) * Vector3.forward;
+            if (IsWallAheadInDirection(settleDir, wallDetectionRange))
+            {
+                float redirectTurn = Random.Range(60f, 300f);
+                if (Random.value > 0.5f) redirectTurn = -redirectTurn;
+                targetFacingAngleY = facingAngleY + redirectTurn;
+                stateTimer = 0f;
+                bobPhaseOffset = Time.time;
+                currentState = DroneState.Bobbing;
+                return;
+            }
+
             float legDistance = Mathf.Max(0.1f, Random.Range(moveDistanceCenter - moveDistanceVariation, moveDistanceCenter + moveDistanceVariation));
             Vector3 moveDir = Quaternion.Euler(0f, facingAngleY, 0f) * Vector3.forward;
             moveTarget = new Vector3(
@@ -470,6 +485,16 @@ public class robotDroneMovement : MonoBehaviour
 
     void UpdateMoving()
     {
+        if (IsWallAheadInDirection(transform.forward, wallDetectionRange))
+        {
+            currentMoveSpeed = 0f;
+            currentTargetHoverHeight = PickRandomHoverHeight();
+            stateTimer = 0f;
+            bobPhaseOffset = Time.time;
+            currentState = DroneState.Bobbing;
+            return;
+        }
+
         // Face and pitch in the real travel direction for fast-forward movement feel.
         Vector3 flatToTarget = new Vector3(
             moveTarget.x - transform.position.x,
@@ -517,12 +542,18 @@ public class robotDroneMovement : MonoBehaviour
             currentPitch = 0f;
             transform.rotation = Quaternion.Euler(0f, facingAngleY, 0f);
 
-            float turn = Random.Range(60f, 300f);
-            if (Random.value > 0.5f)
+            float candidateAngle = facingAngleY;
+            int maxAttempts = 8;
+            for (int attempt = 0; attempt < maxAttempts; attempt++)
             {
-                turn = -turn;
+                float turn = Random.Range(60f, 300f);
+                if (Random.value > 0.5f) turn = -turn;
+                candidateAngle = facingAngleY + turn;
+                Vector3 candidateDir = Quaternion.Euler(0f, candidateAngle, 0f) * Vector3.forward;
+                if (!IsWallAheadInDirection(candidateDir, wallDetectionRange))
+                    break;
             }
-            targetFacingAngleY = facingAngleY + turn;
+            targetFacingAngleY = candidateAngle;
 
             stateTimer = 0f;
             bobPhaseOffset = Time.time;
@@ -538,19 +569,21 @@ public class robotDroneMovement : MonoBehaviour
             return;
         }
 
-        Vector3 toPlayer = new Vector3(
-            player.position.x - transform.position.x,
-            0f,
-            player.position.z - transform.position.z
-        );
+        Vector3 toPlayer = player.position - transform.position;
+        float distance = toPlayer.magnitude;
 
-        float flatDistance = toPlayer.magnitude;
-        if (flatDistance > 0.001f)
+        if (distance > 0.001f)
         {
             Vector3 chaseDir = toPlayer.normalized;
-            float targetYaw = Mathf.Atan2(chaseDir.x, chaseDir.z) * Mathf.Rad2Deg;
-            facingAngleY = Mathf.MoveTowardsAngle(facingAngleY, targetYaw, chaseTurnSpeed * Time.deltaTime);
 
+            // Face the player both horizontally and vertically.
+            float targetYaw   = Mathf.Atan2(chaseDir.x, chaseDir.z) * Mathf.Rad2Deg;
+            float targetPitch = -Mathf.Asin(Mathf.Clamp(chaseDir.y, -1f, 1f)) * Mathf.Rad2Deg;
+            facingAngleY = Mathf.MoveTowardsAngle(facingAngleY, targetYaw, chaseTurnSpeed * Time.deltaTime);
+            currentPitch = Mathf.MoveTowards(currentPitch, targetPitch, rotateSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Euler(currentPitch, facingAngleY, 0f);
+
+            // Move directly toward the player.
             float targetChaseSpeed = chaseSpeed;
             if (matchPlayerSpeedWhileChasing)
             {
@@ -558,20 +591,13 @@ public class robotDroneMovement : MonoBehaviour
             }
 
             currentMoveSpeed = Mathf.MoveTowards(currentMoveSpeed, targetChaseSpeed, acceleration * Time.deltaTime);
-            float stepDistance = Mathf.Min(currentMoveSpeed * Time.deltaTime, flatDistance);
-
-            Vector3 nextPos = transform.position + chaseDir * stepDistance;
-            nextPos.y = ClampHeight(nextPos.y);
-            transform.position = nextPos;
+            float step = Mathf.Min(currentMoveSpeed * Time.deltaTime, distance);
+            transform.position += chaseDir * step;
         }
         else
         {
             currentMoveSpeed = Mathf.MoveTowards(currentMoveSpeed, 0f, deceleration * Time.deltaTime);
         }
-
-        float targetPitch = -Mathf.Abs(tiltAngle);
-        currentPitch = Mathf.MoveTowards(currentPitch, targetPitch, rotateSpeed * Time.deltaTime);
-        transform.rotation = Quaternion.Euler(currentPitch, facingAngleY, 0f);
     }
 
     float GetPlayerFlatSpeed()
@@ -597,6 +623,25 @@ public class robotDroneMovement : MonoBehaviour
         currentState = DroneState.Bobbing;
     }
 
+    bool IsWallAheadInDirection(Vector3 direction, float distance)
+    {
+        if (direction.sqrMagnitude < 0.0001f) return false;
+        return Physics.Raycast(transform.position, direction.normalized, distance, obstacleMask);
+    }
+
+    float ClampHeightToWalls(float desiredY)
+    {
+        float currentY = transform.position.y;
+        float dy = desiredY - currentY;
+        if (Mathf.Abs(dy) < 0.0001f) return desiredY;
+        Vector3 dir = dy > 0f ? Vector3.up : Vector3.down;
+        if (Physics.Raycast(transform.position, dir, out RaycastHit hit, Mathf.Abs(dy) + 0.05f, obstacleMask))
+        {
+            return currentY + dir.y * Mathf.Max(0f, hit.distance - 0.05f);
+        }
+        return desiredY;
+    }
+
     void CheckPlayerDetection()
     {
         if (player == null)
@@ -615,10 +660,7 @@ public class robotDroneMovement : MonoBehaviour
         bool nowInSight = false;
         if (distance <= detectionRange && angle <= fovAngle * 0.5f)
         {
-            if (!Physics.Raycast(transform.position, toPlayer.normalized, distance, obstacleMask))
-            {
-                nowInSight = true;
-            }
+            nowInSight = true;
         }
 
         if (nowInSight && !playerInSight)
