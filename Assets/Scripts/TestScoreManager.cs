@@ -8,7 +8,7 @@ using System.Collections;
 
 public class TestScoreManager : MonoBehaviour
 {
-    private int score = 0;
+    // private int score = 0;
 
     public TextMeshProUGUI scoreText;
 
@@ -24,9 +24,12 @@ public class TestScoreManager : MonoBehaviour
 
     private void AddScore(int amount)
     {
-        score += amount;
-        SetText(score);
-        Debug.Log("Score: " + score);
+        // score += amount;
+        // SetText(score);
+        // Debug.Log("Score: " + score);
+
+        GameManager.Instance.AddMoney(amount);
+        SetText(GameManager.Instance.GetMoney());
     }
 
     private void SetText(int newText)
