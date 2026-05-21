@@ -58,11 +58,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _WallNorm:
-        m_Texture: {fileID: 2800000, guid: bb28157e3158326489ad12ba89aa03dc, type: 3}
+        m_Texture: {fileID: 2800000, guid: af21590ae856cca44b6835d09d0d9065, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _WallTex:
-        m_Texture: {fileID: 2800000, guid: d8a6f2cd1342e4e46b57722b8ed43b5b, type: 3}
+        m_Texture: {fileID: 2800000, guid: db192b4b896f29540aadad76eb5205ec, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -85,7 +85,7 @@ Material:
     - _SecondSmoothness: 0
     - _SecondTextureHeight: 0
     - _SecondTextureThreshhold: 0.78
-    - _scale: 0.4
+    - _scale: 0.01
     - _thresh: 0.707
     m_Colors: []
   m_BuildTextureStacks: []

@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class InfiniteCityManager : MonoBehaviour
 {
+    [Header("Materials")]
+    public Material material1;
+    public Material material2;
+    public Material material3;
+
     [Header("References")]
     public Transform player;
     public GameObject buildingPrefab;
@@ -90,45 +95,57 @@ public class InfiniteCityManager : MonoBehaviour
         }
     }
 
-    void SpawnBuilding(Vector2Int cell)
+   void SpawnBuilding(Vector2Int cell)
+{
+    Vector3 targetPos = new Vector3(
+        cell.x * cellSize,
+        0,
+        cell.y * cellSize
+    );
+
+    // Deterministic seed
+    int seed = cell.x * 73856093 ^ cell.y * 19349663;
+    Random.InitState(seed);
+
+    float height = Random.Range(minHeight, maxHeight);
+
+    Vector3 startPos = new Vector3(
+        targetPos.x,
+        spawnDepth,
+        targetPos.z
+    );
+
+    GameObject building =
+        Instantiate(buildingPrefab, startPos, Quaternion.identity);
+
+    building.transform.localScale = new Vector3(
+        45f,
+        height,
+        45f
+    );
+
+    // FINAL POSITION
+    Vector3 finalPos =
+        targetPos + Vector3.up * (height / 2f);
+
+    // RANDOM MATERIAL
+    Material[] materials = { material1, material2, material3 };
+
+    int materialIndex = Random.Range(0, materials.Length);
+
+    Renderer renderer = building.GetComponent<Renderer>();
+
+    if (renderer != null)
     {
-        Vector3 targetPos = new Vector3(
-            cell.x * cellSize,
-            0,
-            cell.y * cellSize
-        );
-
-        // Deterministic random height
-        int seed = cell.x * 73856093 ^ cell.y * 19349663;
-        Random.InitState(seed);
-
-        float height = Random.Range(minHeight, maxHeight);
-
-        // Spawn underground
-        Vector3 startPos = new Vector3(
-            targetPos.x,
-            spawnDepth,
-            targetPos.z
-        );
-
-        GameObject building =
-            Instantiate(buildingPrefab, startPos, Quaternion.identity);
-
-        building.transform.localScale = new Vector3(
-            45f,
-            height,
-            45f
-        );
-
-        // Final position so base rests on ground
-        Vector3 finalPos =
-            targetPos + Vector3.up * (height / 2f);
-
-        activeBuildings.Add(cell, building);
-
-        StartCoroutine(RiseBuilding(building, startPos, finalPos));
+        renderer.material = materials[materialIndex];
     }
 
+    activeBuildings.Add(cell, building);
+
+    StartCoroutine(
+        RiseBuilding(building, startPos, finalPos)
+    );
+}
     IEnumerator RiseBuilding(
         GameObject building,
         Vector3 startPos,

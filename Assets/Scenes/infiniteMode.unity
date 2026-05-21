@@ -153,12 +153,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24f24e93ad22a9d4caa158a8cbd27c49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  material1: {fileID: 2100000, guid: 27824b80880939e4d9f2a583fdc493b0, type: 2}
+  material2: {fileID: 2100000, guid: 1c47903534f666a4593a4f8ed438dfe0, type: 2}
+  material3: {fileID: 2100000, guid: 80b31c11decd0f34a9fa47379a03b22e, type: 2}
   player: {fileID: 70597874}
   buildingPrefab: {fileID: 2528417680041347037, guid: 8395838b1ead66f44ae9edd3dfb4362d, type: 3}
   cellSize: 50
   renderDistance: 3
   minHeight: 40
   maxHeight: 140
+  spawnDepth: -120
+  riseDuration: 1.5
 --- !u!4 &810411514
 Transform:
   m_ObjectHideFlags: 0
