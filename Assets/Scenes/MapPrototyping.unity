@@ -461,20 +461,12 @@ PrefabInstance:
       value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
-      propertyPath: hoverHeight
-      value: 7.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
       propertyPath: detectionRange
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
       propertyPath: wallDetectionRange
       value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
-      propertyPath: hoverHeightVariance
-      value: 7.75
       objectReference: {fileID: 0}
     - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
       propertyPath: moveDistanceVariation
