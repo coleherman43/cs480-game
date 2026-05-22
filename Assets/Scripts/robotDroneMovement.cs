@@ -7,7 +7,7 @@ public class robotDroneMovement : MonoBehaviour
 {
     public float hoverHeight = 2.05f;
     public float hoverHeightCenter = 7.25f;
-    public float hoverHeightVariance = 7.75f;
+    public float hoverHeightVariance = 8.75f;
     public float bobAmplitude = 0.2f;
     public float bobSpeed = 1.75f;
     public float moveSpeed = 2.5f;
@@ -474,6 +474,14 @@ public class robotDroneMovement : MonoBehaviour
             if (currentCoin == null) return;
         }
 
+        // Skip coins that are above the drone's reachable height (e.g. sky coins).
+        if (currentCoin.position.y > GetHeightMax() + 2f)
+        {
+            currentCoin = PickRandomCoin();
+            checkingBypassActive = false;
+            if (currentCoin == null) return;
+        }
+
         Vector3 toTarget = currentCoin.position - transform.position;
         float dist = toTarget.magnitude;
 
@@ -564,7 +572,7 @@ public class robotDroneMovement : MonoBehaviour
 
         Quaternion toDesired = Quaternion.LookRotation(desiredDir, Vector3.up);
         float[] yawOffsets   = {  0f,  45f, -45f,  90f, -90f, 135f, -135f, 180f };
-        float[] pitchOffsets = {  0f,  30f, -30f,  60f, -60f,  90f };
+        float[] pitchOffsets = {  0f,  30f, -30f,  60f, -60f };
 
         Vector3 bestDir   = -desiredDir;  // worst-case fallback
         float   bestScore = float.NegativeInfinity;
