@@ -10,8 +10,8 @@ public class robotDroneMovement : MonoBehaviour
     public float bobAmplitude = 0.2f;
     public float bobSpeed = 1.75f;
     public float moveDistanceCenter = 15f;
-    public float moveDistanceVariation = 5f;
-    public float moveSpeed = 8f;
+    public float moveDistanceVariation = 40f;
+    public float moveSpeed = 2.5f;
     public float acceleration = 9f;
     public float deceleration = 12f;
     public float chaseSpeed = 10f;
@@ -30,9 +30,9 @@ public class robotDroneMovement : MonoBehaviour
 
     [Header("Detection")]
     public Transform player;
-    public float detectionRange = 50f;
-    public float fovAngle = 60f;
-    public float wallDetectionRange = 10f;
+    public float detectionRange = 15f;
+    public float fovAngle = 70f;
+    public float wallDetectionRange = 5f;
     public LayerMask obstacleMask;
 
     [Header("Chase Lose Timer")]
@@ -67,6 +67,7 @@ public class robotDroneMovement : MonoBehaviour
     float chaseTimerRemaining;
     bool playerLost;
     float currentTargetHoverHeight;
+    float currentHoverY;
     AudioSource audioSource;
     MeshFilter fovConeMeshFilter;
     MeshRenderer fovConeMeshRenderer;
@@ -99,6 +100,7 @@ public class robotDroneMovement : MonoBehaviour
         chaseTimerRemaining = chaseLoseDuration;
         playerLost = false;
         currentTargetHoverHeight = PickRandomHoverHeight();
+        currentHoverY = ClampHeight(hoverHeight);
 
         RemoveLegacyFovLight();
         SetupFovCone();
@@ -107,6 +109,7 @@ public class robotDroneMovement : MonoBehaviour
     void Start()
     {
         transform.position = new Vector3(transform.position.x, ClampHeight(hoverHeight), transform.position.z);
+        currentHoverY = transform.position.y;
     }
 
     void Update()
@@ -118,6 +121,11 @@ public class robotDroneMovement : MonoBehaviour
 
         CheckPlayerDetection();
         UpdateChaseLoseTimer();
+
+        if (currentState != DroneState.Chasing)
+        {
+            UpdateCurrentHoverY();
+        }
 
         switch (currentState)
         {
@@ -420,10 +428,17 @@ public class robotDroneMovement : MonoBehaviour
         }
     }
 
+    void UpdateCurrentHoverY()
+    {
+        currentHoverY = Mathf.MoveTowards(currentHoverY, currentTargetHoverHeight, chaseVerticalSpeed * Time.deltaTime);
+        currentHoverY = ClampHeight(currentHoverY);
+        currentHoverY = ClampHeightToWalls(currentHoverY);
+    }
+
     void UpdateBobbing()
     {
         float bobOffset = Mathf.Sin((Time.time - bobPhaseOffset) * bobSpeed) * bobAmplitude;
-        float targetY = currentTargetHoverHeight + bobOffset;
+        float targetY = currentHoverY + bobOffset;
         float clampedY = ClampHeight(targetY);
         clampedY = ClampHeightToWalls(clampedY);
         transform.position = new Vector3(transform.position.x, clampedY, transform.position.z);
@@ -441,20 +456,21 @@ public class robotDroneMovement : MonoBehaviour
 
     void UpdateSettling()
     {
-        float newY = Mathf.MoveTowards(transform.position.y, currentTargetHoverHeight, moveSpeed * 2f * Time.deltaTime);
+        float newY = Mathf.MoveTowards(transform.position.y, currentHoverY, moveSpeed * 2f * Time.deltaTime);
         newY = ClampHeight(newY);
+        newY = ClampHeightToWalls(newY);
         transform.position = new Vector3(transform.position.x, newY, transform.position.z);
 
         facingAngleY = Mathf.MoveTowardsAngle(facingAngleY, targetFacingAngleY, rotateSpeed * Time.deltaTime);
         transform.rotation = Quaternion.Euler(0f, facingAngleY, 0f);
 
-        bool ySettled = Mathf.Abs(newY - currentTargetHoverHeight) < settleThreshold;
+        bool ySettled = Mathf.Abs(newY - currentHoverY) < settleThreshold;
         bool rotSettled = Mathf.Abs(Mathf.DeltaAngle(facingAngleY, targetFacingAngleY)) < angleThreshold;
 
         if (ySettled && rotSettled)
         {
             facingAngleY = targetFacingAngleY;
-            transform.position = new Vector3(transform.position.x, ClampHeight(currentTargetHoverHeight), transform.position.z);
+            transform.position = new Vector3(transform.position.x, ClampHeight(currentHoverY), transform.position.z);
             transform.rotation = Quaternion.Euler(0f, facingAngleY, 0f);
 
             Vector3 settleDir = Quaternion.Euler(0f, facingAngleY, 0f) * Vector3.forward;
@@ -473,7 +489,7 @@ public class robotDroneMovement : MonoBehaviour
             Vector3 moveDir = Quaternion.Euler(0f, facingAngleY, 0f) * Vector3.forward;
             moveTarget = new Vector3(
                 transform.position.x + moveDir.x * legDistance,
-                ClampHeight(currentTargetHoverHeight),
+                ClampHeight(currentHoverY),
                 transform.position.z + moveDir.z * legDistance
             );
 
@@ -514,7 +530,7 @@ public class robotDroneMovement : MonoBehaviour
 
             float stepDistance = Mathf.Min(currentMoveSpeed * Time.deltaTime, distanceToTarget);
             Vector3 nextPos = transform.position + moveDir * stepDistance;
-            nextPos.y = ClampHeight(currentTargetHoverHeight);
+            nextPos.y = ClampHeightToWalls(currentHoverY);
             transform.position = nextPos;
         }
 
@@ -592,7 +608,10 @@ public class robotDroneMovement : MonoBehaviour
 
             currentMoveSpeed = Mathf.MoveTowards(currentMoveSpeed, targetChaseSpeed, acceleration * Time.deltaTime);
             float step = Mathf.Min(currentMoveSpeed * Time.deltaTime, distance);
-            transform.position += chaseDir * step;
+            Vector3 chaseNextPos = transform.position + chaseDir * step;
+            float chaseNewY = Mathf.MoveTowards(transform.position.y, chaseNextPos.y, chaseVerticalSpeed * Time.deltaTime);
+            chaseNewY = ClampHeightToWalls(chaseNewY);
+            transform.position = new Vector3(chaseNextPos.x, chaseNewY, chaseNextPos.z);
         }
         else
         {
@@ -618,6 +637,8 @@ public class robotDroneMovement : MonoBehaviour
     {
         currentMoveSpeed = 0f;
         targetFacingAngleY = facingAngleY;
+        currentHoverY = transform.position.y;
+        currentTargetHoverHeight = currentHoverY;
         stateTimer = 0f;
         bobPhaseOffset = Time.time;
         currentState = DroneState.Bobbing;

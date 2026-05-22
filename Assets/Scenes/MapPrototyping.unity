@@ -453,8 +453,24 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1656364329}
     - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
+      propertyPath: fovAngle
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
+      propertyPath: moveSpeed
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
       propertyPath: hoverHeight
       value: 7.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
+      propertyPath: detectionRange
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
+      propertyPath: wallDetectionRange
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
       propertyPath: hoverHeightVariance
@@ -462,7 +478,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
       propertyPath: moveDistanceVariation
-      value: 30
+      value: 40
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
