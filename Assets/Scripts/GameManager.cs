@@ -33,6 +33,15 @@ else
 {
     Debug.Log("Map locked!");
 }
+
+Unlock an Upgrade
+GameManager.Instance.UnlockUpgrade("GemMagnet");
+
+Check if the Player has a certain Upgrade
+if (GameManager.Instance.IsUpgradeUnlocked("GoldSpeed"))
+{
+    // Modify player mechanics
+}
 */
 
 using UnityEngine;
@@ -42,11 +51,25 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    // ==============================
     // Player money
+    // ==============================
     public int playerMoney = 0;
 
+    // ==============================
     // Maps/Scenes the player has unlocked
+    // ==============================
     public List<int> unlockedScenes = new List<int>();
+
+    // ==============================
+    // Upgrades/abilities the player has unlocked
+    // ==============================
+    public Dictionary<string, bool> unlockedUpgrades = new Dictionary<string, bool>();
+
+    // ==============================
+    // Money Multiplier
+    // ==============================
+    public int moneyMultiplier = 2;
 
     private void Awake()
     {
@@ -58,14 +81,38 @@ public class GameManager : MonoBehaviour
             // Keep this object alive across scenes
             DontDestroyOnLoad(gameObject);
 
-            // Tutorial map is unlocked by default (1 in Scene List)
-            // unlockedScenes.Add(1);
+            InitializeGameData();
         }
         else
         {
             Destroy(gameObject);
         }
     }
+
+    void InitializeGameData()
+    {
+        // Tutorial map is unlocked by default (1 in Scene List)
+        // unlockedScenes.Add(1);
+
+        // ==============================
+        // Initialize Upgrades
+        // ==============================
+        unlockedUpgrades.Add("GemMagnet", false);
+        unlockedUpgrades.Add("GoldMagnet", false);
+        unlockedUpgrades.Add("IronMagnet", false);
+
+        unlockedUpgrades.Add("GemSpeed", false);
+        unlockedUpgrades.Add("GoldSpeed", false);
+        unlockedUpgrades.Add("IronSpeed", false);
+
+        unlockedUpgrades.Add("Money2x", false);
+        unlockedUpgrades.Add("Money5x", false);
+        unlockedUpgrades.Add("Money10x", false);
+    }
+
+    // ==============================
+    // Money
+    // ==============================
 
     public int GetMoney()
     {
@@ -75,7 +122,7 @@ public class GameManager : MonoBehaviour
     // Add money
     public void AddMoney(int amount)
     {
-        playerMoney += amount;
+        playerMoney += amount * moneyMultiplier;
     }
 
     // Spend money
@@ -90,6 +137,10 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
+    // ==============================
+    // Scenes
+    // ==============================
+
     // Unlock a scene
     public void UnlockScene(int sceneNum)
     {
@@ -103,5 +154,41 @@ public class GameManager : MonoBehaviour
     public bool IsSceneUnlocked(int sceneNum)
     {
         return unlockedScenes.Contains(sceneNum);
+    }
+
+    // ==============================
+    // Upgrades
+    // ==============================
+
+    public void UnlockUpgrade(string upgradeName)
+    {
+        if (unlockedUpgrades.ContainsKey(upgradeName))
+        {
+            unlockedUpgrades[upgradeName] = true;
+
+            // Money multiplier upgrades
+            if (upgradeName == "Money2x")
+            {
+                moneyMultiplier = 2;
+            }
+            else if (upgradeName == "Money5x")
+            {
+                moneyMultiplier = 5;
+            }
+            else if (upgradeName == "Money10x")
+            {
+                moneyMultiplier = 10;
+            }
+        }
+    }
+
+    public bool IsUpgradeUnlocked(string upgradeName)
+    {
+        if (unlockedUpgrades.ContainsKey(upgradeName))
+        {
+            return unlockedUpgrades[upgradeName];
+        }
+
+        return false;
     }
 }
