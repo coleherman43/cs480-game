@@ -43,25 +43,33 @@ public class InfiniteCityManager : MonoBehaviour
         if (newCell != currentPlayerCell)
         {
             currentPlayerCell = newCell;
+            
             UpdateVisibleBuildings();
         }
     }
 
     Vector2Int GetPlayerCell()
     {
-        int x = Mathf.FloorToInt(player.position.x / cellSize);
-        int z = Mathf.FloorToInt(player.position.z / cellSize);
 
-        return new Vector2Int(x, z);
+        int x = (int)(player.position.x / cellSize);
+        int z = (int)(player.position.z / cellSize);
+
+        return new Vector2Int(x , z);
+    }
+
+    private int CellOnAxis(int axisPos)
+    {
+        return 1;
     }
 
     void UpdateVisibleBuildings()
     {
+        Debug.Log("Updating buildings, player is at:" + currentPlayerCell);
         HashSet<Vector2Int> neededCells = new HashSet<Vector2Int>();
 
-        for (int x = -1 * renderDistance; x < renderDistance + 1; x++)
+        for (int x = -renderDistance; x <= renderDistance; x++)
         {
-            for (int z = -1 * renderDistance; z < renderDistance + 1; z++)
+            for (int z = -renderDistance; z <= renderDistance; z++)
             {
                 Vector2Int cell =
                     new Vector2Int(
