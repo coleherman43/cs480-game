@@ -158,8 +158,9 @@ MonoBehaviour:
   material3: {fileID: 2100000, guid: 80b31c11decd0f34a9fa47379a03b22e, type: 2}
   player: {fileID: 70597874}
   buildingPrefab: {fileID: 2528417680041347037, guid: 8395838b1ead66f44ae9edd3dfb4362d, type: 3}
-  cellSize: 50
-  renderDistance: 3
+  cellSize: 65
+  blockSize: 50
+  renderDistance: 1
   minHeight: 40
   maxHeight: 140
   spawnDepth: -120

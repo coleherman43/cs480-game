@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,6 +14,7 @@ public class InfiniteCityManager : MonoBehaviour
 
     [Header("Grid Settings")]
     public int cellSize = 50;
+    public float blockSize = 45;
     public int renderDistance = 2;
 
     [Header("Building Settings")]
@@ -59,9 +59,9 @@ public class InfiniteCityManager : MonoBehaviour
     {
         HashSet<Vector2Int> neededCells = new HashSet<Vector2Int>();
 
-        for (int x = -renderDistance; x <= renderDistance; x++)
+        for (int x = -1 * renderDistance; x < renderDistance + 1; x++)
         {
-            for (int z = -renderDistance; z <= renderDistance; z++)
+            for (int z = -1 * renderDistance; z < renderDistance + 1; z++)
             {
                 Vector2Int cell =
                     new Vector2Int(
@@ -95,79 +95,35 @@ public class InfiniteCityManager : MonoBehaviour
         }
     }
 
-   void SpawnBuilding(Vector2Int cell)
-{
-    Vector3 targetPos = new Vector3(
-        cell.x * cellSize,
-        0,
-        cell.y * cellSize
-    );
-
-    // Deterministic seed
-    int seed = cell.x * 73856093 ^ cell.y * 19349663;
-    Random.InitState(seed);
-
-    float height = Random.Range(minHeight, maxHeight);
-
-    Vector3 startPos = new Vector3(
-        targetPos.x,
-        spawnDepth,
-        targetPos.z
-    );
-
-    GameObject building =
-        Instantiate(buildingPrefab, startPos, Quaternion.identity);
-
-    building.transform.localScale = new Vector3(
-        45f,
-        height,
-        45f
-    );
-
-    // FINAL POSITION
-    Vector3 finalPos =
-        targetPos + Vector3.up * (height / 2f);
-
-    // RANDOM MATERIAL
-    Material[] materials = { material1, material2, material3 };
-
-    int materialIndex = Random.Range(0, materials.Length);
-
-    Renderer renderer = building.GetComponent<Renderer>();
-
-    if (renderer != null)
+    void SpawnBuilding(Vector2Int cell)
     {
-        renderer.material = materials[materialIndex];
-    }
+        Vector3 spawnPos = new Vector3(
+            cell.x * cellSize,
+            0,
+            cell.y * cellSize
+        );
 
-    activeBuildings.Add(cell, building);
+        GameObject building =
+            Instantiate(buildingPrefab, spawnPos, Quaternion.identity);
 
-    StartCoroutine(
-        RiseBuilding(building, startPos, finalPos)
-    );
-}
-    IEnumerator RiseBuilding(
-        GameObject building,
-        Vector3 startPos,
-        Vector3 finalPos)
-    {
-        float elapsed = 0f;
+        ProceduralBuilding pb =
+            building.GetComponent<ProceduralBuilding>();
 
-        while (elapsed < riseDuration)
+        if (pb != null)
         {
-            elapsed += Time.deltaTime;
+            Material[] mats = { material1, material2, material3 };
 
-            float t = elapsed / riseDuration;
-
-            // Smooth easing
-            t = Mathf.SmoothStep(0f, 1f, t);
-
-            building.transform.position =
-                Vector3.Lerp(startPos, finalPos, t);
-
-            yield return null;
+            pb.Initialize(
+                cell,
+                blockSize,
+                minHeight,
+                maxHeight,
+                spawnDepth,
+                riseDuration,
+                mats
+            );
         }
 
-        building.transform.position = finalPos;
+        activeBuildings.Add(cell, building);
     }
 }

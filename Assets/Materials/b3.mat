@@ -85,7 +85,7 @@ Material:
     - _SecondSmoothness: 0
     - _SecondTextureHeight: 0
     - _SecondTextureThreshhold: 0.78
-    - _scale: 0.01
+    - _scale: 1.2
     - _thresh: 0.707
     m_Colors: []
   m_BuildTextureStacks: []
