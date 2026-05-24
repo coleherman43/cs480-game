@@ -53,8 +53,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5230302192251502642, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
+      propertyPath: fovAngle
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230302192251502642, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
+      propertyPath: moveSpeed
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230302192251502642, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
       propertyPath: hoverHeight
       value: 7.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230302192251502642, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
+      propertyPath: detectionRange
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230302192251502642, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
+      propertyPath: wallDetectionRange
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5230302192251502642, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
       propertyPath: hoverHeightVariance
@@ -63,6 +79,10 @@ PrefabInstance:
     - target: {fileID: 5230302192251502642, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
       propertyPath: obstacleMask.m_Bits
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230302192251502642, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
+      propertyPath: moveDistanceVariation
+      value: 40
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
