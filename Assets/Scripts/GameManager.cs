@@ -47,6 +47,12 @@ if (GameManager.Instance.IsUpgradeUnlocked("GoldSpeed"))
 using UnityEngine;
 using System.Collections.Generic;
 
+public enum UpgradeType
+{
+    Normal,
+    MoneyMultiplier
+}
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -69,7 +75,7 @@ public class GameManager : MonoBehaviour
     // ==============================
     // Money Multiplier
     // ==============================
-    public int moneyMultiplier = 2;
+    public int moneyMultiplier = 1;
 
     private void Awake()
     {
@@ -174,10 +180,17 @@ public class GameManager : MonoBehaviour
             else if (upgradeName == "Money5x")
             {
                 moneyMultiplier = 5;
+
+                // Disable lower tier
+                unlockedUpgrades["Money2x"] = false;
             }
             else if (upgradeName == "Money10x")
             {
                 moneyMultiplier = 10;
+
+                // Disable lower tiers
+                unlockedUpgrades["Money2x"] = false;
+                unlockedUpgrades["Money5x"] = false;
             }
         }
     }

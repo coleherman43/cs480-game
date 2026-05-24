@@ -411,7 +411,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3b89329da494474ba6407ca9069e54d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  playerMoney: 0
+  playerMoney: 1000
   unlockedScenes: 
   moneyMultiplier: 1
 --- !u!4 &2092870440
