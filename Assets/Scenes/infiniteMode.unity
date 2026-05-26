@@ -160,7 +160,7 @@ MonoBehaviour:
   buildingPrefab: {fileID: 2528417680041347037, guid: 8395838b1ead66f44ae9edd3dfb4362d, type: 3}
   cellSize: 65
   blockSize: 50
-  renderDistance: 2
+  renderDistance: 1
   minHeight: 40
   maxHeight: 140
   spawnDepth: -120

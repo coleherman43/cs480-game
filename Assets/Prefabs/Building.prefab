@@ -32,7 +32,8 @@ Transform:
   m_LocalPosition: {x: 6.24259, y: -0, z: 162.95555}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7016282749768781676}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6582212340662551526
@@ -125,3 +126,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ac01cf6f30353147975431e3cbc9396, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  rooftopPrefabs:
+  - {fileID: 5320693769374558572, guid: 73a140a2deaff334289735b1686a0719, type: 3}
+  - {fileID: 295627565317579318, guid: 1140ee2f0f097a147af17cf77956e88f, type: 3}
+  - {fileID: 2440618495539207235, guid: 32206b4c326f9964b9fec1473afb4e76, type: 3}
+  - {fileID: 8369035197520043102, guid: 378c826455b1b6f4581e0b8b931392ff, type: 3}
+  - {fileID: 5452643733661980181, guid: 52e92b54cb7ac394190575ef949e742d, type: 3}
+  - {fileID: 3697662575518903749, guid: 83fdfed6a6940d04c86e164af64ffcfd, type: 3}
+  - {fileID: 8092327149577734642, guid: 36f73b64edc5e9a4bbf07baee59c6875, type: 3}
+  - {fileID: 5537054540225388889, guid: 432750e433411934d8430e23033427c8, type: 3}
+  - {fileID: 6000874503196087365, guid: 1b5792d343db92c44a076435f9c337ee, type: 3}
+  - {fileID: 957562905052707337, guid: 62ad858f26d819746b0b3625655ab7f4, type: 3}
+  rooftopAnchor: {fileID: 2968065204570881405}
+--- !u!1 &2968065204570881405
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7016282749768781676}
+  m_Layer: 3
+  m_Name: anchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7016282749768781676
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2968065204570881405}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 482808684618657159}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

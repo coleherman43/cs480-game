@@ -1,9 +1,16 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ProceduralBuilding : MonoBehaviour
 {
     private Renderer rend;
+
+    [Header("Rooftop Generation")]
+    public List<GameObject> rooftopPrefabs = new List<GameObject>();
+
+    [Tooltip("Empty child object used as rooftop spawn anchor")]
+    public GameObject rooftopAnchor;
 
     void Awake()
     {
@@ -32,6 +39,13 @@ public class ProceduralBuilding : MonoBehaviour
             blockSize
         );
 
+        // Move rooftop anchor to top of cube
+        if (rooftopAnchor != null)
+        {
+            rooftopAnchor.transform.localPosition =
+                new Vector3(0f, 0.5f, 0f);
+        }
+
         // MATERIAL
         int materialIndex = Random.Range(0, materials.Length);
 
@@ -55,10 +69,72 @@ public class ProceduralBuilding : MonoBehaviour
 
         transform.position = startPos;
 
+        // ROOFTOP GENERATION
+        GenerateRooftop();
+
         // ANIMATION
         StartCoroutine(
             RiseBuilding(startPos, finalPos, riseDuration)
         );
+    }
+
+    void GenerateRooftop()
+    {
+        // Safety checks
+        if (rooftopAnchor == null)
+        {
+            Debug.LogWarning(
+                $"No rooftop anchor assigned on {gameObject.name}"
+            );
+
+            return;
+        }
+
+        if (rooftopPrefabs == null ||
+            rooftopPrefabs.Count == 0)
+        {
+            return;
+        }
+
+        // Pick random rooftop prefab
+        int prefabIndex =
+            Random.Range(0, rooftopPrefabs.Count);
+
+        GameObject rooftopPrefab =
+            rooftopPrefabs[prefabIndex];
+
+        // Random rotation:
+        // 0, 90, or 180
+        int[] rotations = { 0, 90, 180 };
+
+        int rotationY =
+            rotations[
+                Random.Range(0, rotations.Length)
+            ];
+
+        Quaternion rotation =
+            Quaternion.Euler(0f, rotationY, 0f);
+
+        GameObject rooftop = Instantiate(
+            rooftopPrefab,
+            rooftopAnchor.transform.position,
+            rotation,
+            rooftopAnchor.transform
+        );
+
+        rooftop.transform.localPosition =
+            Vector3.zero;
+
+        // Preserve authored prefab scale
+        Vector3 prefabScale =
+            rooftopPrefab.transform.localScale;
+        
+        rooftop.transform.localScale = new Vector3(
+            prefabScale.x,
+            prefabScale.y * 50f / transform.localScale.y,
+            prefabScale.z
+        );
+        
     }
 
     IEnumerator RiseBuilding(
