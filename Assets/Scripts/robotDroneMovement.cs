@@ -790,7 +790,8 @@ public class robotDroneMovement : MonoBehaviour
         }
 
         playerLost = true;
-        Debug.Log("Player caught: detected by drone for 5 seconds. Add future game over logic here.");
+        //Debug.Log("Player caught: detected by drone for 5 seconds. Add future game over logic here.");
+        GameEvents.gameOver?.Invoke(false);    
     }
 
     void OnGUI()
