@@ -45,6 +45,9 @@ public class robotDroneMovement : MonoBehaviour
     [Header("HUD")]
     public bool showChaseHud = true;
 
+    [Header("Infinite Mode")]
+    public bool infiniteMode = false;
+
     [Header("FOV Cone Visual")]
     public bool showFovCone = true;
     public Color fovConeColor = new Color(0.2f, 0.6f, 1f, 0.22f);
@@ -55,7 +58,7 @@ public class robotDroneMovement : MonoBehaviour
     public float fovConeForwardOffset = 0.05f;
     public float sightedAlphaBoost = 0.12f;
 
-    enum DroneState { Checking, Bobbing, Chasing }
+    enum DroneState { Checking, Bobbing, Chasing, InfiniteChase }
 
     DroneState currentState;
     float stateTimer;
@@ -116,10 +119,17 @@ public class robotDroneMovement : MonoBehaviour
     {
         transform.position = new Vector3(transform.position.x, ClampHeight(hoverHeight), transform.position.z);
         currentHoverY = transform.position.y;
-        FindAllCoins();
-        currentCoin = PickRandomCoin();
-        if (currentCoin != null)
-            SetFacingToward(currentCoin.position);
+        if (infiniteMode)
+        {
+            currentState = DroneState.InfiniteChase;
+        }
+        else
+        {
+            FindAllCoins();
+            currentCoin = PickRandomCoin();
+            if (currentCoin != null)
+                SetFacingToward(currentCoin.position);
+        }
     }
 
     void Update()
@@ -132,11 +142,14 @@ public class robotDroneMovement : MonoBehaviour
         CheckPlayerDetection();
         UpdateChaseLoseTimer();
 
-        coinRefreshTimer -= Time.deltaTime;
-        if (coinRefreshTimer <= 0f)
+        if (!infiniteMode)
         {
-            FindAllCoins();
-            coinRefreshTimer = 5f;
+            coinRefreshTimer -= Time.deltaTime;
+            if (coinRefreshTimer <= 0f)
+            {
+                FindAllCoins();
+                coinRefreshTimer = 5f;
+            }
         }
 
         switch (currentState)
@@ -150,6 +163,9 @@ public class robotDroneMovement : MonoBehaviour
                 break;
             case DroneState.Chasing:
                 UpdateChasing();
+                break;
+            case DroneState.InfiniteChase:
+                UpdateInfiniteChase();
                 break;
         }
 
@@ -653,6 +669,42 @@ public class robotDroneMovement : MonoBehaviour
         }
     }
 
+    void UpdateInfiniteChase()
+    {
+        if (player == null) return;
+
+        Vector3 toPlayer = player.position - transform.position;
+        float distance = toPlayer.magnitude;
+
+        if (distance > 0.001f)
+        {
+            Vector3 chaseDir = toPlayer.normalized;
+
+            float targetYaw   = Mathf.Atan2(chaseDir.x, chaseDir.z) * Mathf.Rad2Deg;
+            float targetPitch = -Mathf.Asin(Mathf.Clamp(chaseDir.y, -1f, 1f)) * Mathf.Rad2Deg;
+            facingAngleY = Mathf.MoveTowardsAngle(facingAngleY, targetYaw, chaseTurnSpeed * Time.deltaTime);
+            currentPitch = Mathf.MoveTowards(currentPitch, targetPitch, rotateSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Euler(currentPitch, facingAngleY, 0f);
+
+            float targetChaseSpeed = chaseSpeed;
+            if (matchPlayerSpeedWhileChasing)
+            {
+                targetChaseSpeed = Mathf.Max(minChaseSpeed, GetPlayerFlatSpeed());
+            }
+
+            currentMoveSpeed = Mathf.MoveTowards(currentMoveSpeed, targetChaseSpeed, acceleration * Time.deltaTime);
+            float step = Mathf.Min(currentMoveSpeed * Time.deltaTime, distance);
+            Vector3 chaseNextPos = transform.position + chaseDir * step;
+            float chaseNewY = Mathf.MoveTowards(transform.position.y, chaseNextPos.y, chaseVerticalSpeed * Time.deltaTime);
+            chaseNewY = ClampHeightToWalls(chaseNewY);
+            transform.position = new Vector3(chaseNextPos.x, chaseNewY, chaseNextPos.z);
+        }
+        else
+        {
+            currentMoveSpeed = Mathf.MoveTowards(currentMoveSpeed, 0f, deceleration * Time.deltaTime);
+        }
+    }
+
     float GetPlayerFlatSpeed()
     {
         if (player == null)
@@ -767,13 +819,13 @@ public class robotDroneMovement : MonoBehaviour
         {
             PlaySfx(robotNoticesClip);
             Debug.Log("Drone spotted the player!");
-            currentState = DroneState.Chasing;
+            currentState = infiniteMode ? DroneState.InfiniteChase : DroneState.Chasing;
         }
         else if (!nowInSight && playerInSight)
         {
             PlaySfx(robotLosesClip);
             Debug.Log("Drone lost sight of the player.");
-            if (currentState == DroneState.Chasing)
+            if (!infiniteMode && currentState == DroneState.Chasing)
             {
                 ResumePatrolFromChase();
             }

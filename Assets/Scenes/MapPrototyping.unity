@@ -175,6 +175,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1656364329}
+    - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
+      propertyPath: infiniteMode
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -452,6 +456,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1656364329}
+    - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
+      propertyPath: infiniteMode
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
