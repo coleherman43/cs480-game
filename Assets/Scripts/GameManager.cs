@@ -47,12 +47,6 @@ if (GameManager.Instance.IsUpgradeUnlocked("GoldSpeed"))
 using UnityEngine;
 using System.Collections.Generic;
 
-public enum UpgradeType
-{
-    Normal,
-    MoneyMultiplier
-}
-
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -143,6 +137,19 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
+    // Player penalty taking away $500 when they die
+    public void penalizePlayer()
+    {
+        if (playerMoney < 500)
+        {
+            playerMoney = 0;
+        }
+        else
+        {
+            playerMoney -= 500;
+        }
+    }
+
     // ==============================
     // Scenes
     // ==============================
@@ -180,17 +187,10 @@ public class GameManager : MonoBehaviour
             else if (upgradeName == "Money5x")
             {
                 moneyMultiplier = 5;
-
-                // Disable lower tier
-                unlockedUpgrades["Money2x"] = false;
             }
             else if (upgradeName == "Money10x")
             {
                 moneyMultiplier = 10;
-
-                // Disable lower tiers
-                unlockedUpgrades["Money2x"] = false;
-                unlockedUpgrades["Money5x"] = false;
             }
         }
     }
