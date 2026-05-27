@@ -908,6 +908,7 @@ GameObject:
   - component: {fileID: 1529365657}
   - component: {fileID: 1529365656}
   - component: {fileID: 1529365661}
+  - component: {fileID: 1529365662}
   m_Layer: 0
   m_Name: PlayerTest
   m_TagString: Untagged
@@ -1037,6 +1038,7 @@ Transform:
   m_Children:
   - {fileID: 1306071365}
   - {fileID: 166230494}
+  - {fileID: 1614697653}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1529365661
@@ -1066,6 +1068,36 @@ MonoBehaviour:
   runSpeed: 10
   grounded: 1
   onWall: 0
+--- !u!114 &1529365662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529365655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
+  m_Actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: 
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &1614697649
 GameObject:
   m_ObjectHideFlags: 0
@@ -1198,12 +1230,12 @@ Transform:
   m_GameObject: {fileID: 1614697649}
   serializedVersion: 2
   m_LocalRotation: {x: -0.15974578, y: 0.7988146, z: -0.24213074, w: -0.5270192}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 948973970}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1529365660}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1614697654
 MonoBehaviour:
@@ -1228,4 +1260,3 @@ SceneRoots:
   - {fileID: 1163727134}
   - {fileID: 838078634}
   - {fileID: 1529365660}
-  - {fileID: 1614697653}

@@ -202,7 +202,6 @@ public class PlayerController : MonoBehaviour
 		if (crouching && grounded && readyToJump)
 		{
 			rb.AddForce(Vector3.down * Time.deltaTime * 3000f);
-			return;
 		}
 		if (x > 0f && num > num3) x = 0f;
 		if (x < 0f && num < 0f - num3) x = 0f;
@@ -212,7 +211,6 @@ public class PlayerController : MonoBehaviour
 		float num4 = 1f;
 		float num5 = 1f;
 		if (!grounded) { num4 = 0.5f; num5 = 0.5f; }
-		if (grounded && crouching) num5 = 0f;
 
 		if (wallRunning) { num5 = 1.2f; num4 = 1.2f; }
 
