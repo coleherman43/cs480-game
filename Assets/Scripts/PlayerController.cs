@@ -234,6 +234,7 @@ public class PlayerController : MonoBehaviour
         if ((grounded || wallRunning || surfing) && readyToJump)
 		{
 		    MonoBehaviour.print("jumping");
+		    GameEvents.OnJump?.Invoke();
 		    Vector3 velocity = rb.linearVelocity;
 		    readyToJump = false;
 		    rb.AddForce(Vector2.up * jumpForce * 1.5f);
