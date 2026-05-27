@@ -1,8 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class InfiniteCityManager : MonoBehaviour
 {
+    public TextMeshProUGUI tutorialText;
+
     [Header("Materials")]
     public Material material1;
     public Material material2;
@@ -33,6 +38,7 @@ public class InfiniteCityManager : MonoBehaviour
     void OnEnable()
     {
         GameEvents.gameOver += onOver;
+        StartCoroutine(EnableGravityAfterDelay());
     }
 
     void OnDisable()
@@ -144,9 +150,40 @@ public class InfiniteCityManager : MonoBehaviour
 
         activeBuildings.Add(cell, building);
     }
-    private void onOver(bool status)
+
+    private IEnumerator EnableGravityAfterDelay()
     {
-        
+        Rigidbody rb = player.GetComponent<Rigidbody>();
+
+        rb.useGravity = false;
+
+        yield return new WaitForSeconds(1.5f);
+
+        rb.useGravity = true;
+    }
+
+     public void SetText(string newText)
+    {
+        tutorialText.text = newText;
+    }
+    
+    public void onOver(bool status)
+    {
+        if (status)
+        {
+            SetText("Game Over -- You Won!");
+            GameManager.Instance.PenalizePlayer();
+            Invoke(nameof(returnToMenu), 1.5f);
+        } else
+        {
+            SetText("Game Over -- You Failed :(");
+            Invoke(nameof(returnToMenu), 1.5f);
+        }
+    }
+
+    private void returnToMenu()
+    {
+        SceneManager.LoadScene(2); // Must be the same index as computer room
     }
 }
 

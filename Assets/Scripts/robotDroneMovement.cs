@@ -97,7 +97,11 @@ public class robotDroneMovement : MonoBehaviour
     float PickRandomHoverHeight() => Random.Range(GetHeightMin(), GetHeightMax());
 
     void Awake()
-    {
+    {   
+        if (player == null)
+        {
+            player = GameObject.Find("PlayerNew").transform;
+        }
         audioSource = GetComponent<AudioSource>();
         currentState = DroneState.Checking;
         stateTimer = 0f;

@@ -2,7 +2,7 @@
 using UnityEngine;
 using TMPro;
 using System.Collections;
-using UnityEngine.SceneManagement; // Required for TextMesh Pro
+using UnityEngine.SceneManagement; 
 
 public class TextController : MonoBehaviour
 {
@@ -36,6 +36,7 @@ public class TextController : MonoBehaviour
         } else
         {
             SetText("Game Over -- You Failed :(");
+            GameManager.Instance.PenalizePlayer();
             Invoke(nameof(returnToMenu), 1.5f);
         }
     }

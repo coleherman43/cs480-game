@@ -15,13 +15,45 @@ public class pickupDetection : MonoBehaviour
 {
     //List to dynamically track items in the pickup radius
     private List<GameObject> items = new List<GameObject>();
-    private void Update()
+
+    public float radius = 0;
+    int tier = 0;
+    private void OnEnable()
     {
-        //Check input
-        if (Input.GetKeyDown(KeyCode.E))
+        if (GameManager.Instance.IsUpgradeUnlocked("GemMagnet"))
+        {
+            tier = 3;
+        }else if (GameManager.Instance.IsUpgradeUnlocked("GoldMagnet"))
+        {
+            tier = 2;
+        }else if (GameManager.Instance.IsUpgradeUnlocked("IronMagnet"))
+        {
+            tier = 1;
+        }
+
+        if(tier > 0)
+        {
+            GetComponent<SphereCollider>().radius = radius * tier;
+        }
+        
+        
+
+    }
+
+    private void Update()
+    {   if(tier == 0)
+        {
+            //Check input
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                pickupNearby();
+            }
+        }
+        else
         {
             pickupNearby();
         }
+        
     }
     //When an object enters the radius.
     private void OnTriggerEnter(Collider other)

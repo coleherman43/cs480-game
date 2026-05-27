@@ -26,10 +26,11 @@ public class ProceduralBuilding : MonoBehaviour
         float riseDuration,
         Material[] materials)
     {
+        /*
         // Deterministic seed
         int seed = cell.x * 73856093 ^ cell.y * 19349663;
         Random.InitState(seed);
-
+        */
         // HEIGHT
         float height = Random.Range(minHeight, maxHeight);
 
