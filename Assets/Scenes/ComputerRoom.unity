@@ -470,7 +470,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeEntryUI
   upgradeName: GoldMagnet
   cost: 1000
-  upgradeType: 0
+  requiredUpgrade: GemMagnet
   iconImage: {fileID: 883641639}
   buyButton: {fileID: 2027279577}
   buttonText: {fileID: 2077822259}
@@ -989,7 +989,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeEntryUI
   upgradeName: Money10x
   cost: 1000
-  upgradeType: 1
+  requiredUpgrade: Money5x
   iconImage: {fileID: 1906588803}
   buyButton: {fileID: 502051693}
   buttonText: {fileID: 1025956622}
@@ -2032,7 +2032,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeEntryUI
   upgradeName: Money2x
   cost: 1000
-  upgradeType: 1
+  requiredUpgrade: 
   iconImage: {fileID: 1141437609}
   buyButton: {fileID: 1396084280}
   buttonText: {fileID: 394796909}
@@ -2710,7 +2710,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeEntryUI
   upgradeName: GoldSpeed
   cost: 0
-  upgradeType: 0
+  requiredUpgrade: 
   iconImage: {fileID: 1352418641}
   buyButton: {fileID: 989030352}
   buttonText: {fileID: 2136210245}
@@ -4461,7 +4461,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeEntryUI
   upgradeName: IronMagnet
   cost: 1000
-  upgradeType: 0
+  requiredUpgrade: GoldMagnet
   iconImage: {fileID: 1855210702}
   buyButton: {fileID: 751171910}
   buttonText: {fileID: 784478074}
@@ -5732,7 +5732,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeEntryUI
   upgradeName: Money5x
   cost: 1000
-  upgradeType: 1
+  requiredUpgrade: Money2x
   iconImage: {fileID: 912533936}
   buyButton: {fileID: 1727283655}
   buttonText: {fileID: 511434380}
@@ -6631,7 +6631,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeEntryUI
   upgradeName: IronSpeed
   cost: 0
-  upgradeType: 0
+  requiredUpgrade: 
   iconImage: {fileID: 1481005185}
   buyButton: {fileID: 1779826195}
   buttonText: {fileID: 933500472}
@@ -6880,7 +6880,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeEntryUI
   upgradeName: GemMagnet
   cost: 1000
-  upgradeType: 0
+  requiredUpgrade: 
   iconImage: {fileID: 2056732120}
   buyButton: {fileID: 1645695518}
   buttonText: {fileID: 2036202638}
@@ -8575,7 +8575,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeEntryUI
   upgradeName: GemSpeed
   cost: 0
-  upgradeType: 0
+  requiredUpgrade: 
   iconImage: {fileID: 1098941552}
   buyButton: {fileID: 1929642366}
   buttonText: {fileID: 1382597098}

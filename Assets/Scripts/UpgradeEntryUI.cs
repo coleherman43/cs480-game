@@ -7,7 +7,8 @@ public class UpgradeEntryUI : MonoBehaviour
     [Header("Upgrade Info")]
     public string upgradeName;
     public int cost;
-    public UpgradeType upgradeType;
+    // Leave blank in inspector for the tier 1 upgrade
+    public string requiredUpgrade;
 
     [Header("UI")]
     public Image iconImage;
@@ -34,33 +35,24 @@ public class UpgradeEntryUI : MonoBehaviour
         }
 
         // ==============================
-        // Money Multiplier Rules
+        // Check prerequisite
         // ==============================
         
-        if (upgradeType == UpgradeType.MoneyMultiplier)
+        if (!string.IsNullOrEmpty(requiredUpgrade))
         {
-            // If the player owns 5x, disable 2x
-            if (upgradeName == "Money2x" && GameManager.Instance.IsUpgradeUnlocked("Money5x"))
-            {
-                DisableUpgrade();
-                return;
-            }
+            bool prerequisiteUnlocked = GameManager.Instance.IsUpgradeUnlocked(requiredUpgrade);
 
-            // If the player owns 10x, disable both
-            if ((upgradeName == "Money2x" || upgradeName == "Money5x") && GameManager.Instance.IsUpgradeUnlocked("Money10x"))
+            if (!prerequisiteUnlocked)
             {
-                DisableUpgrade();
+                buyButton.interactable = false;
+                buttonText.text = "Locked";
                 return;
             }
         }
 
+        // Available to be purchased
+        buyButton.interactable = true;
         buttonText.text = "Buy ($" + cost + ")";
-    }
-
-    void DisableUpgrade()
-    {
-        buyButton.interactable = false;
-        buttonText.text = "Locked";
     }
 
     void BuyUpgrade()
