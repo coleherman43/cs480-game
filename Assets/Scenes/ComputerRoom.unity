@@ -469,8 +469,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeEntryUI
   upgradeName: GoldMagnet
-  cost: 1000
-  requiredUpgrade: GemMagnet
+  cost: 5000
+  requiredUpgrade: IronMagnet
   iconImage: {fileID: 883641639}
   buyButton: {fileID: 2027279577}
   buttonText: {fileID: 2077822259}
@@ -3593,6 +3593,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 989030350}
   m_CullTransparentMesh: 1
+--- !u!1 &993607499
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 993607501}
+  - component: {fileID: 993607500}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &993607500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 993607499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3b89329da494474ba6407ca9069e54d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  playerMoney: 0
+  unlockedScenes: 
+  moneyMultiplier: 1
+  playerPenalty: 500
+--- !u!4 &993607501
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 993607499}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.50365, y: -0, z: 1.61798}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1025956620
 GameObject:
   m_ObjectHideFlags: 0
@@ -4459,8 +4507,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7001bc723752845bcb04b36392b4801b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeEntryUI
-  upgradeName: IronMagnet
-  cost: 1000
+  upgradeName: GemMagnet
+  cost: 10000
   requiredUpgrade: GoldMagnet
   iconImage: {fileID: 1855210702}
   buyButton: {fileID: 751171910}
@@ -6878,7 +6926,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7001bc723752845bcb04b36392b4801b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeEntryUI
-  upgradeName: GemMagnet
+  upgradeName: IronMagnet
   cost: 1000
   requiredUpgrade: 
   iconImage: {fileID: 2056732120}
@@ -8130,7 +8178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapEntryUI
   sceneName: Infinite
-  sceneNum: 0
+  sceneNum: 2
   cost: 500
   sceneNameText: {fileID: 1546529122}
   playButton: {fileID: 397818070}
@@ -8193,7 +8241,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 034ef0b0d90ecef4d859b7d2b0b63f12, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 00226b1a9aab41342879d8803205a7b0, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8770,7 +8818,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7748554494458491064, guid: c96cf26463f3041ee92bdaf01cca204d, type: 3}
       propertyPath: mouseSensitivity
-      value: 100
+      value: 30
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8788,3 +8836,4 @@ SceneRoots:
   - {fileID: 5639677529315078018}
   - {fileID: 1219099907}
   - {fileID: 730095068}
+  - {fileID: 993607501}

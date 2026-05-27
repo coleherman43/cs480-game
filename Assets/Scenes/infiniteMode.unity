@@ -181,9 +181,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Welcome to the Tutorial
-
-'
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 059fbedf6380db94687c927ec2860357, type: 2}
   m_sharedMaterial: {fileID: -3401035768437601175, guid: 059fbedf6380db94687c927ec2860357, type: 2}
@@ -614,6 +612,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 739010260740184240, guid: 5f04dfba14d277a4686eab7ce4c6ac29, type: 3}
+      propertyPath: radius
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1176279675809984615, guid: 5f04dfba14d277a4686eab7ce4c6ac29, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -642,9 +644,17 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5308570929107419968, guid: 5f04dfba14d277a4686eab7ce4c6ac29, type: 3}
+      propertyPath: m_Radius
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 7036585106866092624, guid: 5f04dfba14d277a4686eab7ce4c6ac29, type: 3}
       propertyPath: m_Name
       value: PlayerNew
+      objectReference: {fileID: 0}
+    - target: {fileID: 7036585106866092624, guid: 5f04dfba14d277a4686eab7ce4c6ac29, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 8546629055583501685, guid: 5f04dfba14d277a4686eab7ce4c6ac29, type: 3}
       propertyPath: m_LocalPosition.x

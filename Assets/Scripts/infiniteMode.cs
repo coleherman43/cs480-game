@@ -172,18 +172,19 @@ public class InfiniteCityManager : MonoBehaviour
         if (status)
         {
             SetText("Game Over -- You Won!");
-            GameManager.Instance.PenalizePlayer();
             Invoke(nameof(returnToMenu), 1.5f);
         } else
         {
             SetText("Game Over -- You Failed :(");
+            GameManager.Instance.PenalizePlayer();
             Invoke(nameof(returnToMenu), 1.5f);
         }
     }
 
     private void returnToMenu()
     {
-        SceneManager.LoadScene(2); // Must be the same index as computer room
+        Debug.Log("CALLED SCENE SWITCH");
+        SceneManager.LoadScene(0); // Must be the same index as computer room
     }
 }
 

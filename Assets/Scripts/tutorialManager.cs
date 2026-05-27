@@ -43,7 +43,7 @@ public class TextController : MonoBehaviour
 
     private void returnToMenu()
     {
-        SceneManager.LoadScene(2); // Must be the same index as computer room
+        SceneManager.LoadScene(0); // Must be the same index as computer room
     }
     IEnumerator intro()
     {
