@@ -30,6 +30,16 @@ public class InfiniteCityManager : MonoBehaviour
 
     private Vector2Int currentPlayerCell;
 
+    void OnEnable()
+    {
+        GameEvents.gameOver += onOver;
+    }
+
+    void OnDisable()
+    {
+        GameEvents.gameOver -= onOver;
+    }
+
     void Start()
     {
         currentPlayerCell = GetPlayerCell();
@@ -134,4 +144,9 @@ public class InfiniteCityManager : MonoBehaviour
 
         activeBuildings.Add(cell, building);
     }
+    private void onOver(bool status)
+    {
+        
+    }
 }
+
