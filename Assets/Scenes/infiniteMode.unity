@@ -437,7 +437,7 @@ MonoBehaviour:
   blockSize: 50
   renderDistance: 2
   minHeight: 40
-  maxHeight: 140
+  maxHeight: 90
   spawnDepth: -120
   riseDuration: 1.5
 --- !u!4 &810411514
