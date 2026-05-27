@@ -1,4 +1,6 @@
+//Basic script for bottom of map object to reset scene if player falls.
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playerReset : MonoBehaviour
 {
@@ -7,8 +9,7 @@ public class playerReset : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            //Debug.Log(other.gameObject.name);
-            // This dream is dead until player movement is finalized
+           GameEvents.gameOver?.Invoke(false);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -5,17 +6,16 @@ using UnityEngine.SceneManagement;
 public class robotDroneMovement : MonoBehaviour
 {
     public float hoverHeight = 2.05f;
-    public float hoverHeightCenter = 1.25f;
-    public float hoverHeightVariance = 0.75f;
+    public float hoverHeightCenter = 7.25f;
+    public float hoverHeightVariance = 8.75f;
     public float bobAmplitude = 0.2f;
     public float bobSpeed = 1.75f;
-    public float moveDistanceCenter = 15f;
-    public float moveDistanceVariation = 5f;
-    public float moveSpeed = 8f;
+    public float moveSpeed = 2.5f;
     public float acceleration = 9f;
     public float deceleration = 12f;
     public float chaseSpeed = 10f;
     public float chaseTurnSpeed = 240f;
+    public float chaseVerticalSpeed = 5f;
     public bool matchPlayerSpeedWhileChasing = true;
     public float minChaseSpeed = 3f;
     public float bobDuration = 3f;
@@ -29,13 +29,18 @@ public class robotDroneMovement : MonoBehaviour
 
     [Header("Detection")]
     public Transform player;
-    public float detectionRange = 50f;
-    public float fovAngle = 60f;
+    public float detectionRange = 15f;
+    public float fovAngle = 70f;
+    public float wallDetectionRange = 5f;
     public LayerMask obstacleMask;
 
     [Header("Chase Lose Timer")]
     public float chaseLoseDuration = 5f;
     public bool reloadSceneOnLose = false;
+
+    [Header("Coin Patrol")]
+    public string coinObjectName = "Coin (Clone)";
+    public float checkStopDistance = 10f;
 
     [Header("HUD")]
     public bool showChaseHud = true;
@@ -50,12 +55,11 @@ public class robotDroneMovement : MonoBehaviour
     public float fovConeForwardOffset = 0.05f;
     public float sightedAlphaBoost = 0.12f;
 
-    enum DroneState { Bobbing, Settling, Moving, RotatingBack, Chasing }
+    enum DroneState { Checking, Bobbing, Chasing }
 
     DroneState currentState;
     float stateTimer;
     float bobPhaseOffset;
-    Vector3 moveTarget;
     bool playerInSight;
 
     float facingAngleY;
@@ -65,6 +69,10 @@ public class robotDroneMovement : MonoBehaviour
     float chaseTimerRemaining;
     bool playerLost;
     float currentTargetHoverHeight;
+    float currentHoverY;
+    List<Transform> knownCoins = new List<Transform>();
+    float coinRefreshTimer;
+    Transform currentCoin;
     AudioSource audioSource;
     MeshFilter fovConeMeshFilter;
     MeshRenderer fovConeMeshRenderer;
@@ -74,9 +82,10 @@ public class robotDroneMovement : MonoBehaviour
     float lastConeAngle;
     int lastConeSegments;
 
-    const float settleThreshold = 0.005f;
-    const float angleThreshold = 0.5f;
-
+    // Persistent bypass direction for the Checking state — recomputed only when
+    // the stored path becomes blocked, preventing frame-to-frame oscillation.
+    Vector3 checkingBypassDir;
+    bool    checkingBypassActive;
     float GetHeightMin() => hoverHeightCenter - hoverHeightVariance;
     float GetHeightMax() => hoverHeightCenter + hoverHeightVariance;
 
@@ -87,7 +96,7 @@ public class robotDroneMovement : MonoBehaviour
     void Awake()
     {
         audioSource = GetComponent<AudioSource>();
-        currentState = DroneState.Bobbing;
+        currentState = DroneState.Checking;
         stateTimer = 0f;
         bobPhaseOffset = 0f;
         facingAngleY = transform.eulerAngles.y;
@@ -97,6 +106,7 @@ public class robotDroneMovement : MonoBehaviour
         chaseTimerRemaining = chaseLoseDuration;
         playerLost = false;
         currentTargetHoverHeight = PickRandomHoverHeight();
+        currentHoverY = ClampHeight(hoverHeight);
 
         RemoveLegacyFovLight();
         SetupFovCone();
@@ -105,6 +115,11 @@ public class robotDroneMovement : MonoBehaviour
     void Start()
     {
         transform.position = new Vector3(transform.position.x, ClampHeight(hoverHeight), transform.position.z);
+        currentHoverY = transform.position.y;
+        FindAllCoins();
+        currentCoin = PickRandomCoin();
+        if (currentCoin != null)
+            SetFacingToward(currentCoin.position);
     }
 
     void Update()
@@ -117,19 +132,21 @@ public class robotDroneMovement : MonoBehaviour
         CheckPlayerDetection();
         UpdateChaseLoseTimer();
 
+        coinRefreshTimer -= Time.deltaTime;
+        if (coinRefreshTimer <= 0f)
+        {
+            FindAllCoins();
+            coinRefreshTimer = 5f;
+        }
+
         switch (currentState)
         {
+            case DroneState.Checking:
+                UpdateChecking();
+                break;
             case DroneState.Bobbing:
+                UpdateCurrentHoverY();
                 UpdateBobbing();
-                break;
-            case DroneState.Settling:
-                UpdateSettling();
-                break;
-            case DroneState.Moving:
-                UpdateMoving();
-                break;
-            case DroneState.RotatingBack:
-                UpdateRotatingBack();
                 break;
             case DroneState.Chasing:
                 UpdateChasing();
@@ -418,12 +435,23 @@ public class robotDroneMovement : MonoBehaviour
         }
     }
 
+    void UpdateCurrentHoverY()
+    {
+        currentHoverY = Mathf.MoveTowards(currentHoverY, currentTargetHoverHeight, chaseVerticalSpeed * Time.deltaTime);
+        currentHoverY = ClampHeight(currentHoverY);
+        currentHoverY = ClampHeightToWalls(currentHoverY);
+    }
+
     void UpdateBobbing()
     {
         float bobOffset = Mathf.Sin((Time.time - bobPhaseOffset) * bobSpeed) * bobAmplitude;
-        float targetY = currentTargetHoverHeight + bobOffset;
+        float targetY = currentHoverY + bobOffset;
         float clampedY = ClampHeight(targetY);
+        clampedY = ClampHeightToWalls(clampedY);
         transform.position = new Vector3(transform.position.x, clampedY, transform.position.z);
+
+        if (currentCoin != null)
+            SetFacingToward(currentCoin.position);
 
         facingAngleY = Mathf.MoveTowardsAngle(facingAngleY, targetFacingAngleY, rotateSpeed * Time.deltaTime);
         transform.rotation = Quaternion.Euler(0f, facingAngleY, 0f);
@@ -431,103 +459,156 @@ public class robotDroneMovement : MonoBehaviour
         stateTimer += Time.deltaTime;
         if (stateTimer >= bobDuration)
         {
+            currentCoin = PickRandomCoin();
             stateTimer = 0f;
-            currentState = DroneState.Settling;
+            checkingBypassActive = false;
+            currentState = DroneState.Checking;
         }
     }
 
-    void UpdateSettling()
+    void UpdateChecking()
     {
-        float newY = Mathf.MoveTowards(transform.position.y, currentTargetHoverHeight, moveSpeed * 2f * Time.deltaTime);
-        newY = ClampHeight(newY);
-        transform.position = new Vector3(transform.position.x, newY, transform.position.z);
-
-        facingAngleY = Mathf.MoveTowardsAngle(facingAngleY, targetFacingAngleY, rotateSpeed * Time.deltaTime);
-        transform.rotation = Quaternion.Euler(0f, facingAngleY, 0f);
-
-        bool ySettled = Mathf.Abs(newY - currentTargetHoverHeight) < settleThreshold;
-        bool rotSettled = Mathf.Abs(Mathf.DeltaAngle(facingAngleY, targetFacingAngleY)) < angleThreshold;
-
-        if (ySettled && rotSettled)
+        if (currentCoin == null)
         {
-            facingAngleY = targetFacingAngleY;
-            transform.position = new Vector3(transform.position.x, ClampHeight(currentTargetHoverHeight), transform.position.z);
-            transform.rotation = Quaternion.Euler(0f, facingAngleY, 0f);
+            currentCoin = PickRandomCoin();
+            if (currentCoin == null) return;
+        }
 
-            float legDistance = Mathf.Max(0.1f, Random.Range(moveDistanceCenter - moveDistanceVariation, moveDistanceCenter + moveDistanceVariation));
-            Vector3 moveDir = Quaternion.Euler(0f, facingAngleY, 0f) * Vector3.forward;
-            moveTarget = new Vector3(
-                transform.position.x + moveDir.x * legDistance,
-                ClampHeight(currentTargetHoverHeight),
-                transform.position.z + moveDir.z * legDistance
-            );
+        // Skip coins that are above the drone's reachable height (e.g. sky coins).
+        if (currentCoin.position.y > GetHeightMax() + 2f)
+        {
+            currentCoin = PickRandomCoin();
+            checkingBypassActive = false;
+            if (currentCoin == null) return;
+        }
 
+        Vector3 toTarget = currentCoin.position - transform.position;
+        float dist = toTarget.magnitude;
+
+        // Stop when within range and the coin is inside the FOV.
+        if (dist <= checkStopDistance && IsCoinInFov(currentCoin))
+        {
             currentMoveSpeed = 0f;
-            PlaySfx(robotMovesClip);
-            currentState = DroneState.Moving;
+            currentPitch = 0f;
+            checkingBypassActive = false;
+            currentHoverY = transform.position.y;
+            currentTargetHoverHeight = currentHoverY;
+            bobPhaseOffset = Time.time;
+            stateTimer = 0f;
+            currentState = DroneState.Bobbing;
+            return;
         }
-    }
 
-    void UpdateMoving()
-    {
-        // Face and pitch in the real travel direction for fast-forward movement feel.
-        Vector3 flatToTarget = new Vector3(
-            moveTarget.x - transform.position.x,
-            0f,
-            moveTarget.z - transform.position.z
-        );
-        float distanceToTarget = flatToTarget.magnitude;
-        if (distanceToTarget > 0.0001f)
+        // Persistent steering: only recompute the bypass direction when the direct
+        // path opens up (resume) or the current bypass becomes blocked.
+        Vector3 desiredDir = toTarget.normalized;
+        bool directClear = !Physics.Raycast(transform.position, desiredDir, wallDetectionRange, obstacleMask);
+
+        Vector3 steerDir;
+        if (directClear)
         {
-            Vector3 moveDir = flatToTarget.normalized;
-            facingAngleY = Mathf.Atan2(moveDir.x, moveDir.z) * Mathf.Rad2Deg;
-
-            // Brake as we near destination so speed eases down instead of snapping to stop.
-            float desiredSpeed = Mathf.Min(moveSpeed, distanceToTarget * deceleration);
-            float speedStep = (desiredSpeed >= currentMoveSpeed ? acceleration : deceleration) * Time.deltaTime;
-            currentMoveSpeed = Mathf.MoveTowards(currentMoveSpeed, desiredSpeed, speedStep);
-
-            float stepDistance = Mathf.Min(currentMoveSpeed * Time.deltaTime, distanceToTarget);
-            Vector3 nextPos = transform.position + moveDir * stepDistance;
-            nextPos.y = ClampHeight(currentTargetHoverHeight);
-            transform.position = nextPos;
+            checkingBypassActive = false;
+            steerDir = desiredDir;
+        }
+        else
+        {
+            if (!checkingBypassActive ||
+                Physics.Raycast(transform.position, checkingBypassDir, 1.5f, obstacleMask))
+            {
+                checkingBypassDir    = ComputeSteeringDirection(desiredDir);
+                checkingBypassActive = true;
+            }
+            steerDir = checkingBypassDir;
         }
 
-        float targetPitch = -Mathf.Abs(tiltAngle);
+        // Rotate horizontally to face the steering direction.
+        Vector3 flatSteer = new Vector3(steerDir.x, 0f, steerDir.z);
+        if (flatSteer.sqrMagnitude > 0.0001f)
+        {
+            float targetYaw = Mathf.Atan2(flatSteer.x, flatSteer.z) * Mathf.Rad2Deg;
+            facingAngleY = Mathf.MoveTowardsAngle(facingAngleY, targetYaw, chaseTurnSpeed * Time.deltaTime);
+        }
+
+        // Pitch in the vertical direction of travel.
+        float targetPitch = -Mathf.Asin(Mathf.Clamp(steerDir.y, -1f, 1f)) * Mathf.Rad2Deg;
         currentPitch = Mathf.MoveTowards(currentPitch, targetPitch, rotateSpeed * Time.deltaTime);
         transform.rotation = Quaternion.Euler(currentPitch, facingAngleY, 0f);
 
-        Vector3 flatPos = new Vector3(transform.position.x, 0f, transform.position.z);
-        Vector3 flatTarget = new Vector3(moveTarget.x, 0f, moveTarget.z);
-        if (Vector3.Distance(flatPos, flatTarget) < 0.01f)
+        // Accelerate.
+        currentMoveSpeed = Mathf.MoveTowards(currentMoveSpeed, moveSpeed, acceleration * Time.deltaTime);
+        Vector3 moveStep = steerDir * currentMoveSpeed * Time.deltaTime;
+
+        // Horizontal movement: slide along walls instead of stopping dead.
+        Vector3 hStep = new Vector3(moveStep.x, 0f, moveStep.z);
+        if (hStep.magnitude > 0.0001f &&
+            Physics.Raycast(transform.position, hStep.normalized, out RaycastHit hHit, hStep.magnitude + 0.15f, obstacleMask))
         {
-            currentMoveSpeed = 0f;
-            currentTargetHoverHeight = PickRandomHoverHeight();
-            currentState = DroneState.RotatingBack;
+            Vector3 wallNormal = new Vector3(hHit.normal.x, 0f, hHit.normal.z).normalized;
+            hStep = Vector3.ProjectOnPlane(hStep, wallNormal);
+            checkingBypassActive = false; // recompute next frame now that we hit a wall
         }
+
+        // Vertical movement: standard height clamping.
+        float nextY = Mathf.MoveTowards(transform.position.y,
+            transform.position.y + moveStep.y, chaseVerticalSpeed * Time.deltaTime);
+        nextY = ClampHeight(nextY);
+        nextY = ClampHeightToWalls(nextY);
+
+        transform.position = new Vector3(
+            transform.position.x + hStep.x,
+            nextY,
+            transform.position.z + hStep.z);
     }
 
-    void UpdateRotatingBack()
+    // Probes yaw/pitch offsets from desiredDir and returns the clearest path most
+    // aligned with the original target direction.
+    Vector3 ComputeSteeringDirection(Vector3 desiredDir)
     {
-        currentPitch = Mathf.MoveTowards(currentPitch, 0f, rotateSpeed * Time.deltaTime);
-        transform.rotation = Quaternion.Euler(currentPitch, facingAngleY, 0f);
+        if (desiredDir.sqrMagnitude < 0.0001f) return Vector3.forward;
 
-        if (Mathf.Abs(currentPitch) < 0.5f)
+        // Fast path: desired direction is clear.
+        if (!Physics.Raycast(transform.position, desiredDir, wallDetectionRange, obstacleMask))
+            return desiredDir;
+
+        Quaternion toDesired = Quaternion.LookRotation(desiredDir, Vector3.up);
+        float[] yawOffsets   = {  0f,  45f, -45f,  90f, -90f, 135f, -135f, 180f };
+        float[] pitchOffsets = {  0f,  30f, -30f,  60f, -60f };
+
+        Vector3 bestDir   = -desiredDir;  // worst-case fallback
+        float   bestScore = float.NegativeInfinity;
+
+        foreach (float yaw in yawOffsets)
         {
-            currentPitch = 0f;
-            transform.rotation = Quaternion.Euler(0f, facingAngleY, 0f);
-
-            float turn = Random.Range(60f, 300f);
-            if (Random.value > 0.5f)
+            foreach (float pitch in pitchOffsets)
             {
-                turn = -turn;
+                Vector3 candidate = toDesired * Quaternion.Euler(-pitch, yaw, 0f) * Vector3.forward;
+                candidate.Normalize();
+                if (!Physics.Raycast(transform.position, candidate, wallDetectionRange, obstacleMask))
+                {
+                    // Small continuity bias toward the current facing direction prevents
+                    // oscillation between symmetric alternatives (e.g. ±45°).
+                    float score = Vector3.Dot(candidate, desiredDir)
+                        + 0.1f * Vector3.Dot(candidate, transform.forward);
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        bestDir   = candidate;
+                    }
+                }
             }
-            targetFacingAngleY = facingAngleY + turn;
-
-            stateTimer = 0f;
-            bobPhaseOffset = Time.time;
-            currentState = DroneState.Bobbing;
         }
+
+        return bestDir;
+    }
+
+    bool IsCoinInFov(Transform coin)
+    {
+        if (coin == null) return false;
+        Vector3 toCoin   = coin.position - transform.position;
+        Vector3 flatCoin = new Vector3(toCoin.x, 0f, toCoin.z);
+        Vector3 flatFwd  = new Vector3(transform.forward.x, 0f, transform.forward.z);
+        if (flatCoin.sqrMagnitude < 0.0001f || flatFwd.sqrMagnitude < 0.0001f) return true;
+        return Vector3.Angle(flatFwd, flatCoin) <= fovAngle * 0.5f;
     }
 
     void UpdateChasing()
@@ -538,19 +619,21 @@ public class robotDroneMovement : MonoBehaviour
             return;
         }
 
-        Vector3 toPlayer = new Vector3(
-            player.position.x - transform.position.x,
-            0f,
-            player.position.z - transform.position.z
-        );
+        Vector3 toPlayer = player.position - transform.position;
+        float distance = toPlayer.magnitude;
 
-        float flatDistance = toPlayer.magnitude;
-        if (flatDistance > 0.001f)
+        if (distance > 0.001f)
         {
             Vector3 chaseDir = toPlayer.normalized;
-            float targetYaw = Mathf.Atan2(chaseDir.x, chaseDir.z) * Mathf.Rad2Deg;
-            facingAngleY = Mathf.MoveTowardsAngle(facingAngleY, targetYaw, chaseTurnSpeed * Time.deltaTime);
 
+            // Face the player both horizontally and vertically.
+            float targetYaw   = Mathf.Atan2(chaseDir.x, chaseDir.z) * Mathf.Rad2Deg;
+            float targetPitch = -Mathf.Asin(Mathf.Clamp(chaseDir.y, -1f, 1f)) * Mathf.Rad2Deg;
+            facingAngleY = Mathf.MoveTowardsAngle(facingAngleY, targetYaw, chaseTurnSpeed * Time.deltaTime);
+            currentPitch = Mathf.MoveTowards(currentPitch, targetPitch, rotateSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Euler(currentPitch, facingAngleY, 0f);
+
+            // Move directly toward the player.
             float targetChaseSpeed = chaseSpeed;
             if (matchPlayerSpeedWhileChasing)
             {
@@ -558,20 +641,16 @@ public class robotDroneMovement : MonoBehaviour
             }
 
             currentMoveSpeed = Mathf.MoveTowards(currentMoveSpeed, targetChaseSpeed, acceleration * Time.deltaTime);
-            float stepDistance = Mathf.Min(currentMoveSpeed * Time.deltaTime, flatDistance);
-
-            Vector3 nextPos = transform.position + chaseDir * stepDistance;
-            nextPos.y = ClampHeight(nextPos.y);
-            transform.position = nextPos;
+            float step = Mathf.Min(currentMoveSpeed * Time.deltaTime, distance);
+            Vector3 chaseNextPos = transform.position + chaseDir * step;
+            float chaseNewY = Mathf.MoveTowards(transform.position.y, chaseNextPos.y, chaseVerticalSpeed * Time.deltaTime);
+            chaseNewY = ClampHeightToWalls(chaseNewY);
+            transform.position = new Vector3(chaseNextPos.x, chaseNewY, chaseNextPos.z);
         }
         else
         {
             currentMoveSpeed = Mathf.MoveTowards(currentMoveSpeed, 0f, deceleration * Time.deltaTime);
         }
-
-        float targetPitch = -Mathf.Abs(tiltAngle);
-        currentPitch = Mathf.MoveTowards(currentPitch, targetPitch, rotateSpeed * Time.deltaTime);
-        transform.rotation = Quaternion.Euler(currentPitch, facingAngleY, 0f);
     }
 
     float GetPlayerFlatSpeed()
@@ -591,10 +670,76 @@ public class robotDroneMovement : MonoBehaviour
     void ResumePatrolFromChase()
     {
         currentMoveSpeed = 0f;
-        targetFacingAngleY = facingAngleY;
+        currentCoin = PickRandomCoin();
         stateTimer = 0f;
-        bobPhaseOffset = Time.time;
-        currentState = DroneState.Bobbing;
+        currentState = DroneState.Checking;
+    }
+
+    void FindAllCoins()
+    {
+        knownCoins.Clear();
+        // Match pre-placed coins ("Coin (18)", "Coin (39)"…) as well as
+        // spawner clones ("Coin (Clone)") by checking for the base name.
+        string baseName = coinObjectName.Replace(" (Clone)", "").Trim();
+        GameObject[] all = Object.FindObjectsOfType<GameObject>();
+        for (int i = 0; i < all.Length; i++)
+        {
+            string n = all[i].name;
+            if (n == baseName || n.StartsWith(baseName + " ("))
+                knownCoins.Add(all[i].transform);
+        }
+    }
+
+    Transform PickRandomCoin()
+    {
+        // Remove any coins that have been destroyed.
+        for (int i = knownCoins.Count - 1; i >= 0; i--)
+        {
+            if (knownCoins[i] == null)
+                knownCoins.RemoveAt(i);
+        }
+        if (knownCoins.Count == 0)
+        {
+            FindAllCoins();
+            if (knownCoins.Count == 0) return null;
+        }
+        if (knownCoins.Count == 1) return knownCoins[0];
+
+        // Prefer a coin other than the one we just visited.
+        int start = Random.Range(0, knownCoins.Count);
+        for (int i = 0; i < knownCoins.Count; i++)
+        {
+            Transform candidate = knownCoins[(start + i) % knownCoins.Count];
+            if (candidate != currentCoin) return candidate;
+        }
+        return knownCoins[start];
+    }
+
+    void SetFacingToward(Vector3 worldPos)
+    {
+        Vector3 dir = worldPos - transform.position;
+        dir.y = 0f;
+        if (dir.sqrMagnitude > 0.0001f)
+            targetFacingAngleY = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+    }
+
+    bool IsWallAheadInDirection(Vector3 direction, float distance)
+    {
+        if (direction.sqrMagnitude < 0.0001f) return false;
+        return Physics.Raycast(transform.position, direction.normalized, distance, obstacleMask);
+    }
+
+    float ClampHeightToWalls(float desiredY)
+    {
+        float currentY = transform.position.y;
+        float dy = desiredY - currentY;
+        if (Mathf.Abs(dy) < 0.0001f) return desiredY;
+        Vector3 dir = dy > 0f ? Vector3.up : Vector3.down;
+        if (Physics.Raycast(transform.position, dir, out RaycastHit hit, Mathf.Abs(dy) + 0.05f, obstacleMask))
+        {
+            return currentY + dir.y * Mathf.Max(0f, hit.distance - 0.05f);
+        }
+        return desiredY;
     }
 
     void CheckPlayerDetection()
@@ -615,10 +760,7 @@ public class robotDroneMovement : MonoBehaviour
         bool nowInSight = false;
         if (distance <= detectionRange && angle <= fovAngle * 0.5f)
         {
-            if (!Physics.Raycast(transform.position, toPlayer.normalized, distance, obstacleMask))
-            {
-                nowInSight = true;
-            }
+            nowInSight = true;
         }
 
         if (nowInSight && !playerInSight)
@@ -648,7 +790,8 @@ public class robotDroneMovement : MonoBehaviour
         }
 
         playerLost = true;
-        Debug.Log("Player caught: detected by drone for 5 seconds. Add future game over logic here.");
+        //Debug.Log("Player caught: detected by drone for 5 seconds. Add future game over logic here.");
+        GameEvents.gameOver?.Invoke(false);    
     }
 
     void OnGUI()
