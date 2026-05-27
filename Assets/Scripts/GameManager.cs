@@ -71,6 +71,11 @@ public class GameManager : MonoBehaviour
     // ==============================
     public int moneyMultiplier = 1;
 
+    // ==============================
+    // Player penalty
+    // ==============================
+    public int playerPenalty = 500;
+
     private void Awake()
     {
         // Set up singleton
@@ -137,16 +142,16 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
-    // Player penalty taking away $500 when they die
-    public void penalizePlayer()
+    // Player penalty taking away money when they die
+    public void PenalizePlayer()
     {
-        if (playerMoney < 500)
+        if (playerMoney < playerPenalty)
         {
             playerMoney = 0;
         }
         else
         {
-            playerMoney -= 500;
+            playerMoney -= playerPenalty;
         }
     }
 
