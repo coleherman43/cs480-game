@@ -175,6 +175,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1656364329}
+    - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
+      propertyPath: infiniteMode
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -188,6 +192,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 739010260740184240, guid: 5f04dfba14d277a4686eab7ce4c6ac29, type: 3}
+      propertyPath: radius
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1176279675809984615, guid: 5f04dfba14d277a4686eab7ce4c6ac29, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -452,6 +460,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1656364329}
+    - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
+      propertyPath: infiniteMode
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

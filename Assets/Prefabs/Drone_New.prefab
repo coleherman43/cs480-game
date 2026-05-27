@@ -65,6 +65,10 @@ PrefabInstance:
       value: 7.25
       objectReference: {fileID: 0}
     - target: {fileID: 5230302192251502642, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
+      propertyPath: infiniteMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5230302192251502642, guid: ac12467b5ee06664e8df750d49f7ac04, type: 3}
       propertyPath: detectionRange
       value: 15
       objectReference: {fileID: 0}

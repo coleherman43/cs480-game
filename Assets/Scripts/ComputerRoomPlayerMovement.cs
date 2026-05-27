@@ -38,6 +38,10 @@ public class ComputerRoomPlayerMovement : MonoBehaviour
 
         HandleMouseLook();
         HandleMovement();
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            GameManager.Instance.AddMoney(500);
+        }
     }
 
     void HandleMouseLook()
