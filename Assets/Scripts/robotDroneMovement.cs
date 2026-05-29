@@ -65,11 +65,19 @@ public class robotDroneMovement : MonoBehaviour
     float bobPhaseOffset;
     bool playerInSight;
 
+    // Shared across all drone instances so the catch timer is global —
+    // it counts down whenever ANY drone sees the player and resets only
+    // when NO drone sees the player.
+    static float s_sharedChaseTimer = -1f;
+    static int s_dronesWithSight = 0;
+    static int s_lastTimerUpdateFrame = -1;
+    static bool s_gameOverFired = false;
+
     float facingAngleY;
     float targetFacingAngleY;
     float currentPitch;
     float currentMoveSpeed;
-    float chaseTimerRemaining;
+    bool prevPlayerInSight;
     bool playerLost;
     float currentTargetHoverHeight;
     float currentHoverY;
@@ -106,8 +114,15 @@ public class robotDroneMovement : MonoBehaviour
         targetFacingAngleY = facingAngleY;
         currentPitch = 0f;
         currentMoveSpeed = 0f;
-        chaseTimerRemaining = chaseLoseDuration;
         playerLost = false;
+        prevPlayerInSight = false;
+        // Reset shared state when this is the first drone awakening (handles scene reloads)
+        if (s_dronesWithSight == 0)
+        {
+            s_sharedChaseTimer = chaseLoseDuration;
+            s_gameOverFired = false;
+            s_lastTimerUpdateFrame = -1;
+        }
         currentTargetHoverHeight = PickRandomHoverHeight();
         currentHoverY = ClampHeight(hoverHeight);
 
@@ -134,7 +149,7 @@ public class robotDroneMovement : MonoBehaviour
 
     void Update()
     {
-        if (playerLost)
+        if (playerLost || s_gameOverFired)
         {
             return;
         }
@@ -422,6 +437,9 @@ public class robotDroneMovement : MonoBehaviour
 
     void OnDestroy()
     {
+        if (prevPlayerInSight)
+            s_dronesWithSight = Mathf.Max(0, s_dronesWithSight - 1);
+
         if (fovConeMaterial != null)
         {
             Destroy(fovConeMaterial);
@@ -432,22 +450,38 @@ public class robotDroneMovement : MonoBehaviour
     {
         if (player == null)
         {
-            chaseTimerRemaining = chaseLoseDuration;
+            if (prevPlayerInSight)
+            {
+                s_dronesWithSight = Mathf.Max(0, s_dronesWithSight - 1);
+                prevPlayerInSight = false;
+            }
             return;
         }
 
-        if (playerInSight)
+        // Track sight transitions to maintain an accurate count of drones currently seeing the player
+        if (playerInSight && !prevPlayerInSight)
+            s_dronesWithSight++;
+        else if (!playerInSight && prevPlayerInSight)
+            s_dronesWithSight = Mathf.Max(0, s_dronesWithSight - 1);
+        prevPlayerInSight = playerInSight;
+
+        // Advance the shared timer once per frame (first drone to run this frame does it)
+        if (Time.frameCount != s_lastTimerUpdateFrame)
         {
-            chaseTimerRemaining -= Time.deltaTime;
-            if (chaseTimerRemaining <= 0f)
+            s_lastTimerUpdateFrame = Time.frameCount;
+            if (s_dronesWithSight > 0)
             {
-                chaseTimerRemaining = 0f;
-                TriggerPlayerLoss();
+                s_sharedChaseTimer -= Time.deltaTime;
+                if (s_sharedChaseTimer <= 0f)
+                {
+                    s_sharedChaseTimer = 0f;
+                    TriggerPlayerLoss();
+                }
             }
-        }
-        else
-        {
-            chaseTimerRemaining = chaseLoseDuration;
+            else
+            {
+                s_sharedChaseTimer = chaseLoseDuration;
+            }
         }
     }
 
@@ -836,11 +870,12 @@ public class robotDroneMovement : MonoBehaviour
 
     void TriggerPlayerLoss()
     {
-        if (playerLost)
+        if (s_gameOverFired)
         {
             return;
         }
 
+        s_gameOverFired = true;
         playerLost = true;
         //Debug.Log("Player caught: detected by drone for 5 seconds. Add future game over logic here.");
         GameEvents.gameOver?.Invoke(false);    
@@ -853,7 +888,7 @@ public class robotDroneMovement : MonoBehaviour
             return;
         }
 
-        float timerPercent = Mathf.Clamp01(1f - (chaseTimerRemaining / Mathf.Max(0.01f, chaseLoseDuration)));
+        float timerPercent = Mathf.Clamp01(1f - (s_sharedChaseTimer / Mathf.Max(0.01f, chaseLoseDuration)));
         float barWidth = Mathf.Min(420f, Screen.width - 24f);
         Rect dangerBarRect = new Rect((Screen.width - barWidth) * 0.5f, 24f, barWidth, 16f);
         GUI.color = new Color(0.08f, 0.08f, 0.08f, 0.8f);
