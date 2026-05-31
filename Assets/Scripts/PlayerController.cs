@@ -1,4 +1,5 @@
 using System;
+using System.Dynamic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -63,6 +64,7 @@ public class PlayerController : MonoBehaviour
 	private float desiredX;
 	private float xRotation;
 	private float sensMultiplier = 1f;
+	private float wallRunTimer = 0f;
 	private float jumpCooldown = 0.25f;
 	private float jumpForce = 550f;
 	private float x;
@@ -384,6 +386,18 @@ public class PlayerController : MonoBehaviour
 	{
 		if (wallRunning)
 		{
+			wallRunTimer += Time.deltaTime;
+			
+			// Hard limit: fall off after max time
+			if (wallRunTimer > 3f)
+			{
+				wallRunning = false;
+				readyToWallrun = false;
+				rb.AddForce(wallNormalVector * 600f);
+				Invoke("GetReadyToWallrun", 0.1f);
+				return;
+			}
+
 			rb.AddForce(-wallNormalVector * Time.deltaTime * moveSpeed);
 			rb.AddForce(Vector3.up * Time.deltaTime * rb.mass * 100f * wallRunGravity);
 		}
@@ -416,12 +430,13 @@ public class PlayerController : MonoBehaviour
 
 	private void StartWallRun(Vector3 normal)
 	{
-		if (!grounded && readyToWallrun)
+		if (!grounded && readyToWallrun && Math.Abs(xRotation) < 75f)
 		{
-			wallNormalVector = normal;
-			float num = 20f;
-			if (!wallRunning)
+			if (!wallRunning)  // Only reset timer when STARTING wallrun
 			{
+				wallNormalVector = normal;
+				wallRunTimer = 0f;
+				float num = 20f;
 				rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 				rb.AddForce(Vector3.up * num, ForceMode.Impulse);
 			}
