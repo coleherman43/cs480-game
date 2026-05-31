@@ -27,6 +27,7 @@ public class CrouchCommand : ICommand
 
 
 
+
 public class PlayerController : MonoBehaviour
 {   
     [Header("Assignables")]
@@ -36,7 +37,9 @@ public class PlayerController : MonoBehaviour
 	private Collider playerCollider;
 	public Rigidbody rb;
 
-    [Space(10)]
+    // [Space(10)]
+	public enum SensitivityPreset { Low = 25, Medium = 50, High = 100 }
+	public SensitivityPreset sensitivityPreset = SensitivityPreset.Medium;
 
 	public LayerMask whatIsGround;
 	public LayerMask whatIsWallrunnable;
@@ -105,7 +108,8 @@ public class PlayerController : MonoBehaviour
 	{
 		playerCollider = GetComponent<Collider>();
 		playerInput = GetComponent<PlayerInput>();
-        
+		
+		sensitivity = (float)sensitivityPreset;
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
 		readyToJump = true;
