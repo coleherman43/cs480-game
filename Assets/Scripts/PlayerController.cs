@@ -142,8 +142,8 @@ public class PlayerController : MonoBehaviour
 	private void ReadInput()
 	{
 		Vector2 moveDir = playerInput.actions["Move"].ReadValue<Vector2>();
-		if (moveDir != Vector2.zero)
-			new MoveCommand(moveDir).Execute(this);
+		x = moveDir.x;  // Always update, even if zero
+		y = moveDir.y;  // Always update, even if zero
 		
 		jumping = playerInput.actions["Jump"].IsPressed();
 		if (playerInput.actions["Jump"].WasPressedThisFrame())
@@ -155,6 +155,13 @@ public class PlayerController : MonoBehaviour
 		
 		if (playerInput.actions["Crouch"].WasReleasedThisFrame())
 			StopCrouch();
+	}
+
+	public void SetSensitivityPreset(SensitivityPreset preset)
+	{
+		// Usage example: PlayerController.Instance.SetSensitivityPreset(SensitivityPreset.Low);
+		sensitivity = (float)preset;
+		sensitivityPreset = preset;
 	}
 
 	public void Move(Vector2 direction)
