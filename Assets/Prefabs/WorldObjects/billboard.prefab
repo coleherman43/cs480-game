@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1721218637010377076}
   - component: {fileID: 4043541523630239938}
   - component: {fileID: 1629913901372749584}
-  - component: {fileID: 1575799780576521300}
+  - component: {fileID: 3756552784012001557}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -91,8 +91,8 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1575799780576521300
-MeshCollider:
+--- !u!65 &3756552784012001557
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -109,10 +109,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+  serializedVersion: 3
+  m_Size: {x: 10, y: 2.220446e-16, z: 9.999999}
+  m_Center: {x: -0.0000019073486, y: 0, z: 0}
 --- !u!1 &1536427946615597612
 GameObject:
   m_ObjectHideFlags: 0
@@ -125,6 +124,7 @@ GameObject:
   - component: {fileID: 6291566214795125487}
   - component: {fileID: 522127329550343202}
   - component: {fileID: 7154075282154706444}
+  - component: {fileID: 4520983685461173207}
   m_Layer: 0
   m_Name: Cube (2)
   m_TagString: Untagged
@@ -180,7 +180,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 230f40657e154844e9de4353ddd441df, type: 2}
+  - {fileID: 2100000, guid: f606bae127594c747898e0a36f433f24, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -225,6 +225,34 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4520983685461173207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1536427946615597612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf0b7ed9421183419949793d23139d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  textures:
+  - {fileID: 2800000, guid: 135eb10c04f655b4b954d4759a001653, type: 3}
+  - {fileID: 2800000, guid: a666576fe34ec334481a2d6e6051203b, type: 3}
+  - {fileID: 2800000, guid: 22b5b1ad14e501346b2890a47446f04d, type: 3}
+  - {fileID: 2800000, guid: 687aa0a78cc2d7e41b1ec52233bb0786, type: 3}
+  - {fileID: 2800000, guid: 133aa2fc3304e11488c14eaf8931003e, type: 3}
+  - {fileID: 2800000, guid: 4f053135ad8619149b8d09fed0bfec46, type: 3}
+  - {fileID: 2800000, guid: d40444f372139784bb1e01f144093730, type: 3}
+  - {fileID: 2800000, guid: 9d782d5f2c4957847940b28a7e854b99, type: 3}
+  - {fileID: 2800000, guid: c6d625a322bc5424a89aceb73c553168, type: 3}
+  - {fileID: 2800000, guid: 105907917f6188c4ba5843b13fd6532b, type: 3}
+  - {fileID: 2800000, guid: b9325746b614082488f17b224151e4ff, type: 3}
+  - {fileID: 2800000, guid: b765b4aff8422aa44afa1718fc4236c3, type: 3}
+  - {fileID: 2800000, guid: 75b3e9790c10ddd4988154aa8a0a8125, type: 3}
+  - {fileID: 2800000, guid: e5b47ec610630d84299a5fc4dc3b1b05, type: 3}
+  - {fileID: 2800000, guid: dd0bec95c4073cc49bcb0f412ce859c3, type: 3}
 --- !u!1 &5491345618229336300
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,6 +265,7 @@ GameObject:
   - component: {fileID: 1175123463640524813}
   - component: {fileID: 2849539158052710123}
   - component: {fileID: 3341958112652592563}
+  - component: {fileID: 8161103723828977385}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -292,7 +321,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7ccb7def05830d541b47b47ccb956861, type: 2}
+  - {fileID: 2100000, guid: f606bae127594c747898e0a36f433f24, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -337,6 +366,34 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8161103723828977385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5491345618229336300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf0b7ed9421183419949793d23139d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  textures:
+  - {fileID: 2800000, guid: 135eb10c04f655b4b954d4759a001653, type: 3}
+  - {fileID: 2800000, guid: a666576fe34ec334481a2d6e6051203b, type: 3}
+  - {fileID: 2800000, guid: 22b5b1ad14e501346b2890a47446f04d, type: 3}
+  - {fileID: 2800000, guid: 687aa0a78cc2d7e41b1ec52233bb0786, type: 3}
+  - {fileID: 2800000, guid: 133aa2fc3304e11488c14eaf8931003e, type: 3}
+  - {fileID: 2800000, guid: 4f053135ad8619149b8d09fed0bfec46, type: 3}
+  - {fileID: 2800000, guid: d40444f372139784bb1e01f144093730, type: 3}
+  - {fileID: 2800000, guid: 9d782d5f2c4957847940b28a7e854b99, type: 3}
+  - {fileID: 2800000, guid: c6d625a322bc5424a89aceb73c553168, type: 3}
+  - {fileID: 2800000, guid: 105907917f6188c4ba5843b13fd6532b, type: 3}
+  - {fileID: 2800000, guid: b9325746b614082488f17b224151e4ff, type: 3}
+  - {fileID: 2800000, guid: b765b4aff8422aa44afa1718fc4236c3, type: 3}
+  - {fileID: 2800000, guid: 75b3e9790c10ddd4988154aa8a0a8125, type: 3}
+  - {fileID: 2800000, guid: e5b47ec610630d84299a5fc4dc3b1b05, type: 3}
+  - {fileID: 2800000, guid: dd0bec95c4073cc49bcb0f412ce859c3, type: 3}
 --- !u!1 &5506329462096110674
 GameObject:
   m_ObjectHideFlags: 0

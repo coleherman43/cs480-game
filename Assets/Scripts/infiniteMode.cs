@@ -157,7 +157,7 @@ public class InfiniteCityManager : MonoBehaviour
 
         rb.useGravity = false;
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2.0f);
 
         rb.useGravity = true;
     }

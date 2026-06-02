@@ -73,6 +73,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
+      propertyPath: infiniteMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7615746443474521627, guid: 710dd0db41c53bf419858fd522f96c41, type: 3}
       propertyPath: fovConeLengthMultiplier
       value: 1
       objectReference: {fileID: 0}
