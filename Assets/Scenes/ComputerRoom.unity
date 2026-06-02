@@ -12264,7 +12264,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeEntryUI
   upgradeName: Lounge
-  cost: 1
+  cost: 10000
   requiredUpgrade: 
   iconImage: {fileID: 0}
   buyButton: {fileID: 1929642366}
