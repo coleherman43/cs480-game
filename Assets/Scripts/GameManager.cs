@@ -113,6 +113,11 @@ public class GameManager : MonoBehaviour
         unlockedUpgrades.Add("Money2x", false);
         unlockedUpgrades.Add("Money5x", false);
         unlockedUpgrades.Add("Money10x", false);
+
+        unlockedUpgrades.Add("Bedroom", false);
+        unlockedUpgrades.Add("Lounge", false);
+        unlockedUpgrades.Add("Bathroom", false);
+        unlockedUpgrades.Add("Kitchen", false);
     }
 
     // ==============================

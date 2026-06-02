@@ -58,8 +58,7 @@ public class ProceduralBuilding : MonoBehaviour
         // POSITIONING
         Vector3 finalPos = new Vector3(
             transform.position.x,
-            //height / 2f,
-            0f,
+            height / 2f,
             transform.position.z
         );
 
