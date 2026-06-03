@@ -43,18 +43,27 @@ public class PlayerSoundController : MonoBehaviour
     private void OnCoinCollected(int value)
     {
         if (coinClip != null)
-            audioSource.PlayOneShot(coinClip);
+        {
+            float volume = GameManager.Instance != null ? GameManager.Instance.sfxVolume : 1f;
+            audioSource.PlayOneShot(coinClip, volume);
+        }
     }
 
     private void OnJump()
     {
         if (jumpClip != null)
-            audioSource.PlayOneShot(jumpClip);
+        {
+            float volume = GameManager.Instance != null ? GameManager.Instance.sfxVolume : 1f;
+            audioSource.PlayOneShot(jumpClip, volume);
+        }
     }
 
     private void OnGameOver(bool success)
     {
         if (!success && loseClip != null)
-            audioSource.PlayOneShot(loseClip);
+        {
+            float volume = GameManager.Instance != null ? GameManager.Instance.sfxVolume : 1f;
+            audioSource.PlayOneShot(loseClip, volume);
+        }
     }
 }

@@ -913,6 +913,7 @@ public class robotDroneMovement : MonoBehaviour
             return;
         }
 
-        audioSource.PlayOneShot(clip);
+        float volume = GameManager.Instance != null ? GameManager.Instance.sfxVolume : 1f;
+        audioSource.PlayOneShot(clip, volume);
     }
 }
