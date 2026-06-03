@@ -414,6 +414,10 @@ MonoBehaviour:
   playerMoney: 0
   unlockedScenes: 
   moneyMultiplier: 1
+  playerPenalty: 500
+  backgroundMusic: {fileID: 8300000, guid: e9e6522a6df44536841042f247c5e46c, type: 3}
+  musicVolume: 0.1
+  sensitivityPreset: 50
 --- !u!4 &2092870440
 Transform:
   m_ObjectHideFlags: 0

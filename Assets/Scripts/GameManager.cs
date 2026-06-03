@@ -77,6 +77,15 @@ public class GameManager : MonoBehaviour
     public int playerPenalty = 500;
 
     // ==============================
+    // Background Music
+    // ==============================
+    [Header("Background Music")]
+    public AudioClip backgroundMusic;
+    [Range(0f, 1f)]
+    public float musicVolume = 0.1f;
+    private AudioSource musicSource;
+
+    // ==============================
     // Sensitivity Preset
     // ==============================
     public enum SensitivityPreset { Low = 25, Medium = 50, High = 100 }
@@ -94,11 +103,24 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
             InitializeGameData();
+            PlayBackgroundMusic();
         }
         else
         {
             Destroy(gameObject);
         }
+    }
+
+    void PlayBackgroundMusic()
+    {
+        if (backgroundMusic == null) return;
+
+        musicSource = gameObject.AddComponent<AudioSource>();
+        musicSource.clip = backgroundMusic;
+        musicSource.loop = true;
+        musicSource.playOnAwake = false;
+        musicSource.volume = musicVolume;
+        musicSource.Play();
     }
 
     void InitializeGameData()
