@@ -85,6 +85,13 @@ public class GameManager : MonoBehaviour
     [Range(0f, 1f)]
     public float musicVolume = 0.1f;
     private AudioSource musicSource;
+
+    // ==============================
+    // Sound Effects Volume
+    // ==============================
+    [Header("Sound Effects")]
+    [Range(0f, 1f)]
+    public float sfxVolume = 0.5f;
     private int currentTrack = 0;
 
     // ==============================
