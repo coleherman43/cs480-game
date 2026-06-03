@@ -45,6 +45,7 @@ if (GameManager.Instance.IsUpgradeUnlocked("GoldSpeed"))
 */
 
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
@@ -80,10 +81,11 @@ public class GameManager : MonoBehaviour
     // Background Music
     // ==============================
     [Header("Background Music")]
-    public AudioClip backgroundMusic;
+    public AudioClip[] playlist;
     [Range(0f, 1f)]
     public float musicVolume = 0.1f;
     private AudioSource musicSource;
+    private int currentTrack = 0;
 
     // ==============================
     // Sensitivity Preset
@@ -113,14 +115,32 @@ public class GameManager : MonoBehaviour
 
     void PlayBackgroundMusic()
     {
-        if (backgroundMusic == null) return;
+        if (playlist == null || playlist.Length == 0) return;
 
         musicSource = gameObject.AddComponent<AudioSource>();
-        musicSource.clip = backgroundMusic;
-        musicSource.loop = true;
+        musicSource.loop = false;
         musicSource.playOnAwake = false;
         musicSource.volume = musicVolume;
-        musicSource.Play();
+        StartCoroutine(PlayPlaylist());
+    }
+
+    IEnumerator PlayPlaylist()
+    {
+        while (true)
+        {
+            AudioClip clip = playlist[currentTrack % playlist.Length];
+            if (clip != null)
+            {
+                musicSource.clip = clip;
+                musicSource.Play();
+                yield return new WaitForSeconds(clip.length);
+            }
+            else
+            {
+                yield return new WaitForSeconds(1f);
+            }
+            currentTrack = (currentTrack + 1) % playlist.Length;
+        }
     }
 
     void InitializeGameData()
