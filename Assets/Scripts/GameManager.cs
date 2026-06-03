@@ -76,6 +76,13 @@ public class GameManager : MonoBehaviour
     // ==============================
     public int playerPenalty = 500;
 
+    // ==============================
+    // Sensitivity Preset
+    // ==============================
+    public enum SensitivityPreset { Low = 25, Medium = 50, High = 100 }
+	public SensitivityPreset sensitivityPreset = SensitivityPreset.Medium;
+
+
     private void Awake()
     {
         // Set up singleton
@@ -214,4 +221,22 @@ public class GameManager : MonoBehaviour
 
         return false;
     }
+
+    // ==============================
+    // Sensitivity
+    // ==============================
+    public float GetSensitivityPreset() 
+    {
+        return (float)sensitivityPreset;
+    }
+
+    public SensitivityPreset GetSensPresetAsEnum()
+    {
+        return sensitivityPreset;
+    }
+
+    public void SetSensitivityPreset(SensitivityPreset preset)
+	{
+		sensitivityPreset = preset;
+	}
 }

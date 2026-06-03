@@ -39,15 +39,15 @@ public class PlayerController : MonoBehaviour
 	public Rigidbody rb;
 
     // [Space(10)]
-	public enum SensitivityPreset { Low = 25, Medium = 50, High = 100 }
-	public SensitivityPreset sensitivityPreset = SensitivityPreset.Medium;
+	// public enum SensitivityPreset { Low = 25, Medium = 50, High = 100 }
+	// public SensitivityPreset sensitivityPreset = SensitivityPreset.Medium;
 
 	public LayerMask whatIsGround;
 	public LayerMask whatIsWallrunnable;
 
     [Header("MovementSettings")]
     //Movement Settings 
-	public float sensitivity = 50f;
+	public float sensitivity;
 	public float moveSpeed = 4500f;
 	public float walkSpeed = 20f;
 	public float runSpeed = 10f;
@@ -111,7 +111,7 @@ public class PlayerController : MonoBehaviour
 		playerCollider = GetComponent<Collider>();
 		playerInput = GetComponent<PlayerInput>();
 		
-		sensitivity = (float)sensitivityPreset;
+		sensitivity = GameManager.Instance.GetSensitivityPreset();
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
 		readyToJump = true;
@@ -157,12 +157,14 @@ public class PlayerController : MonoBehaviour
 			StopCrouch();
 	}
 
+	/*
 	public void SetSensitivityPreset(SensitivityPreset preset)
 	{
 		// Usage example: PlayerController.Instance.SetSensitivityPreset(SensitivityPreset.Low);
 		sensitivity = (float)preset;
 		sensitivityPreset = preset;
 	}
+	*/
 
 	public void Move(Vector2 direction)
 	{
