@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
     //Movement Settings 
 	public float sensitivity;
 	public float moveSpeed = 4500f;
-	public float walkSpeed = 20f;
+	public float walkSpeed = 10f; // was 20f
 	public float runSpeed = 10f;
 	public bool grounded;
 	public bool onWall;
@@ -177,7 +177,7 @@ public class PlayerController : MonoBehaviour
 	{
 		if (wallRunning) return;
         
-		float num = 400f;
+		float num = 1000f; // was 400f
         
 		// Only apply position and scale changes when grounded to avoid clipping
 		if (grounded)
@@ -312,6 +312,9 @@ public class PlayerController : MonoBehaviour
 		}
 		if (Mathf.Sqrt(Mathf.Pow(rb.linearVelocity.x, 2f) + Mathf.Pow(rb.linearVelocity.z, 2f)) > walkSpeed)
 		{
+			// If crouching/sliding, allow player to exceed walk speed cap
+			if (crouching) return; 
+
 			float num3 = rb.linearVelocity.y;
 			Vector3 vector = rb.linearVelocity.normalized * walkSpeed;
 			rb.linearVelocity = new Vector3(vector.x, num3, vector.z);
