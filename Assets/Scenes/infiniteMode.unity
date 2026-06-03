@@ -436,7 +436,7 @@ MonoBehaviour:
   cellSize: 60
   blockSize: 50
   renderDistance: 2
-  minHeight: 40
+  minHeight: 50
   maxHeight: 90
   spawnDepth: -120
   riseDuration: 1.5

@@ -45,6 +45,7 @@ if (GameManager.Instance.IsUpgradeUnlocked("GoldSpeed"))
 */
 
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
@@ -76,6 +77,23 @@ public class GameManager : MonoBehaviour
     // ==============================
     public int playerPenalty = 500;
 
+    // ==============================
+    // Background Music
+    // ==============================
+    [Header("Background Music")]
+    public AudioClip[] playlist;
+    [Range(0f, 1f)]
+    public float musicVolume = 0.1f;
+    private AudioSource musicSource;
+    private int currentTrack = 0;
+
+    // ==============================
+    // Sensitivity Preset
+    // ==============================
+    public enum SensitivityPreset { Low = 25, Medium = 50, High = 100 }
+	public SensitivityPreset sensitivityPreset = SensitivityPreset.Medium;
+
+
     private void Awake()
     {
         // Set up singleton
@@ -87,10 +105,41 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
             InitializeGameData();
+            PlayBackgroundMusic();
         }
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    void PlayBackgroundMusic()
+    {
+        if (playlist == null || playlist.Length == 0) return;
+
+        musicSource = gameObject.AddComponent<AudioSource>();
+        musicSource.loop = false;
+        musicSource.playOnAwake = false;
+        musicSource.volume = musicVolume;
+        StartCoroutine(PlayPlaylist());
+    }
+
+    IEnumerator PlayPlaylist()
+    {
+        while (true)
+        {
+            AudioClip clip = playlist[currentTrack % playlist.Length];
+            if (clip != null)
+            {
+                musicSource.clip = clip;
+                musicSource.Play();
+                yield return new WaitForSeconds(clip.length);
+            }
+            else
+            {
+                yield return new WaitForSeconds(1f);
+            }
+            currentTrack = (currentTrack + 1) % playlist.Length;
         }
     }
 
@@ -113,6 +162,11 @@ public class GameManager : MonoBehaviour
         unlockedUpgrades.Add("Money2x", false);
         unlockedUpgrades.Add("Money5x", false);
         unlockedUpgrades.Add("Money10x", false);
+
+        unlockedUpgrades.Add("Bedroom", false);
+        unlockedUpgrades.Add("Lounge", false);
+        unlockedUpgrades.Add("Bathroom", false);
+        unlockedUpgrades.Add("Kitchen", false);
     }
 
     // ==============================
@@ -209,4 +263,22 @@ public class GameManager : MonoBehaviour
 
         return false;
     }
+
+    // ==============================
+    // Sensitivity
+    // ==============================
+    public float GetSensitivityPreset() 
+    {
+        return (float)sensitivityPreset;
+    }
+
+    public SensitivityPreset GetSensPresetAsEnum()
+    {
+        return sensitivityPreset;
+    }
+
+    public void SetSensitivityPreset(SensitivityPreset preset)
+	{
+		sensitivityPreset = preset;
+	}
 }

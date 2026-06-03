@@ -97,6 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d0401248448b9543b1c76c8deca8288, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::pickupDetection
+  radius: 0
 --- !u!1 &5547915394618031643
 GameObject:
   m_ObjectHideFlags: 0
@@ -109,6 +110,7 @@ GameObject:
   - component: {fileID: 4356242666697497132}
   - component: {fileID: 831844796383193528}
   - component: {fileID: 4835257626901056900}
+  - component: {fileID: 1634837392745509547}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -234,6 +236,23 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &1634837392745509547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5547915394618031643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 696395f1f4ff694469605f79ba1b1662, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  playerRb: {fileID: 3224632274827191800}
+  baseFOV: 60
+  speedFactor: 1
+  maxBonusFOV: 25
+  averageFrames: 5
 --- !u!1 &6546712378311344382
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,6 +266,7 @@ GameObject:
   - component: {fileID: 1176279675809984615}
   - component: {fileID: 3793983612762932922}
   - component: {fileID: 1573738933410658477}
+  - component: {fileID: 8696916222194932103}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -386,6 +406,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoveCamera
   player: {fileID: 5423021373260293863}
+--- !u!114 &8696916222194932103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6546712378311344382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 696395f1f4ff694469605f79ba1b1662, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  playerRb: {fileID: 3224632274827191800}
+  baseFOV: 60
+  speedFactor: 1
+  maxBonusFOV: 25
+  averageFrames: 5
 --- !u!1 &7036585106866092624
 GameObject:
   m_ObjectHideFlags: 0
@@ -551,6 +588,7 @@ MonoBehaviour:
   playerCam: {fileID: 249247635349241648}
   orientation: {fileID: 2428951513800817225}
   rb: {fileID: 3224632274827191800}
+  sensitivityPreset: 50
   whatIsGround:
     serializedVersion: 2
     m_Bits: 8
