@@ -1243,7 +1243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeEntryUI
   upgradeName: Money10x
-  cost: 1000
+  cost: 100000
   requiredUpgrade: Money5x
   iconImage: {fileID: 1906588803}
   buyButton: {fileID: 502051693}
@@ -4069,11 +4069,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3b89329da494474ba6407ca9069e54d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  playerMoney: 0
+  playerMoney: 250
   unlockedScenes: 
   moneyMultiplier: 1
   playerPenalty: 500
-  playlist: []
+  playlist:
+  - {fileID: 8300000, guid: 0070322156d044f78ef472eff5935d57, type: 3}
+  - {fileID: 8300000, guid: e9e6522a6df44536841042f247c5e46c, type: 3}
   musicVolume: 0.1
   sfxVolume: 0.5
   sensitivityPreset: 50
@@ -6053,7 +6055,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeEntryUI
   upgradeName: Money5x
-  cost: 1000
+  cost: 10000
   requiredUpgrade: Money2x
   iconImage: {fileID: 912533936}
   buyButton: {fileID: 1727283655}
